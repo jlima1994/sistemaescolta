@@ -1,1563 +1,1719 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Controle de Serviços</title>
-
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f1f5f9;
-            color: #172033;
-        }
-
-        button,
-        input,
-        select {
-            font: inherit;
-        }
-
-        .app {
-            min-height: 100vh;
-        }
-
-        .topbar {
-            background: #0f172a;
-            color: white;
-            min-height: 64px;
-            padding: 12px 22px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,.15);
-        }
-
-        .topbar-title {
-            font-size: 19px;
-            font-weight: 700;
-        }
-
-        .topbar-user {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-badge {
-            background: #1e293b;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-        }
-
-        .container {
-            max-width: 1250px;
-            margin: 0 auto;
-            padding: 25px;
-        }
-
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        .login-page {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background:
-                linear-gradient(135deg, #0f172a, #1e3a8a);
-        }
-
-        .login-box {
-            width: 100%;
-            max-width: 420px;
-            background: white;
-            padding: 35px;
-            border-radius: 18px;
-            box-shadow: 0 20px 60px rgba(0,0,0,.25);
-        }
-
-        .login-logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .login-logo h1 {
-            margin: 0 0 8px;
-            color: #0f172a;
-        }
-
-        .login-logo p {
-            margin: 0;
-            color: #64748b;
-        }
-
-        .card {
-            background: white;
-            border-radius: 14px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 12px rgba(15,23,42,.08);
-        }
-
-        .card h2,
-        .card h3 {
-            margin-top: 0;
-        }
-
-        .page-title {
-            margin-bottom: 20px;
-        }
-
-        .page-title h1 {
-            margin: 0 0 5px;
-            font-size: 28px;
-        }
-
-        .page-title p {
-            margin: 0;
-            color: #64748b;
-        }
-
-        .grid {
-            display: grid;
-            gap: 16px;
-        }
-
-        .grid-2 {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .grid-3 {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-
-        .grid-4 {
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-        }
-
-        .field {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-        }
-
-        .field label {
-            font-weight: 600;
-            font-size: 14px;
-            color: #334155;
-        }
-
-        input,
-        select {
-            width: 100%;
-            min-height: 44px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 9px 12px;
-            background: white;
-            color: #0f172a;
-            outline: none;
-        }
-
-        input:focus,
-        select:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37,99,235,.12);
-        }
-
-        input[readonly] {
-            background: #f8fafc;
-        }
-
-        .btn {
-            border: 0;
-            border-radius: 9px;
-            padding: 11px 17px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: .15s;
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-        }
-
-        .btn-primary {
-            background: #2563eb;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #1d4ed8;
-        }
-
-        .btn-success {
-            background: #16a34a;
-            color: white;
-        }
-
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #475569;
-            color: white;
-        }
-
-        .btn-light {
-            background: #e2e8f0;
-            color: #0f172a;
-        }
-
-        .btn-block {
-            width: 100%;
-        }
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 20px;
-        }
-
-        .menu-option {
-            min-height: 180px;
-            border: 2px solid #e2e8f0;
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            cursor: pointer;
-            text-align: left;
-            transition: .2s;
-        }
-
-        .menu-option:hover {
-            border-color: #2563eb;
-            box-shadow: 0 8px 25px rgba(37,99,235,.12);
-            transform: translateY(-2px);
-        }
-
-        .menu-icon {
-            font-size: 40px;
-            margin-bottom: 15px;
-        }
-
-        .menu-option h2 {
-            margin: 0 0 8px;
-        }
-
-        .menu-option p {
-            margin: 0;
-            color: #64748b;
-        }
-
-        .service-options {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 20px;
-        }
-
-        .service-option {
-            min-height: 160px;
-            padding: 25px;
-            border-radius: 15px;
-            border: 2px solid #e2e8f0;
-            background: white;
-            cursor: pointer;
-            transition: .2s;
-        }
-
-        .service-option:hover {
-            border-color: #2563eb;
-            transform: translateY(-2px);
-        }
-
-        .service-option h2 {
-            margin-top: 0;
-        }
-
-        .service-option p {
-            color: #64748b;
-        }
-
-        .section-title {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-            margin-bottom: 18px;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 12px;
-        }
-
-        .section-title h2,
-        .section-title h3 {
-            margin: 0;
-        }
-
-        .table-wrap {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 650px;
-        }
-
-        th,
-        td {
-            padding: 11px 12px;
-            border-bottom: 1px solid #e2e8f0;
-            text-align: left;
-            vertical-align: middle;
-        }
-
-        th {
-            background: #f8fafc;
-            color: #334155;
-            font-size: 13px;
-        }
-
-        td input,
-        td select {
-            min-height: 38px;
-        }
-
-        .pedagio-section {
-            display: none;
-        }
-
-        .pedagio-section.active {
-            display: block;
-        }
-
-        .total-box {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            border-radius: 10px;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-            font-weight: 700;
-        }
-
-        .resenha {
-            background: #f8fafc;
-            border-left: 5px solid #2563eb;
-            padding: 20px;
-            border-radius: 8px;
-            line-height: 1.8;
-        }
-
-        .resenha strong {
-            color: #0f172a;
-        }
-
-        .actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .alert {
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: none;
-        }
-
-        .alert.show {
-            display: block;
-        }
-
-        .alert-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
-        }
-
-        .alert-success {
-            background: #dcfce7;
-            color: #166534;
-            border: 1px solid #bbf7d0;
-        }
-
-        .alert-info {
-            background: #dbeafe;
-            color: #1e40af;
-            border: 1px solid #bfdbfe;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 15px;
-            color: #475569;
-        }
-
-        .loading.show {
-            display: block;
-        }
-
-        .resumo-cards {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 15px;
-        }
-
-        .resumo-card {
-            background: white;
-            border-radius: 12px;
-            padding: 18px;
-            box-shadow: 0 2px 10px rgba(15,23,42,.06);
-        }
-
-        .resumo-card small {
-            color: #64748b;
-        }
-
-        .resumo-card strong {
-            display: block;
-            font-size: 22px;
-            margin-top: 5px;
-        }
-
-        .money {
-            font-weight: 700;
-            color: #166534;
-        }
-
-        .empty {
-            padding: 30px;
-            text-align: center;
-            color: #64748b;
-        }
-
-        .tag {
-            display: inline-block;
-            padding: 5px 9px;
-            border-radius: 999px;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .tag-escolta {
-            background: #dbeafe;
-            color: #1d4ed8;
-        }
-
-        .tag-preservacao {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .footer-note {
-            text-align: center;
-            color: #64748b;
-            font-size: 12px;
-            padding: 20px;
-        }
-
-        @media (max-width: 900px) {
-            .grid-4,
-            .resumo-cards {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .grid-3 {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-
-        @media (max-width: 700px) {
-            .container {
-                padding: 15px;
-            }
-
-            .grid-2,
-            .grid-3,
-            .grid-4,
-            .menu-grid,
-            .service-options,
-            .resumo-cards {
-                grid-template-columns: 1fr;
-            }
-
-            .topbar {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .login-box {
-                padding: 25px 20px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<title>Controle de Serviços</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    min-height: 100%;
+    background: #f1f5f9;
+}
+
+body {
+    margin: 0;
+    min-height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f1f5f9;
+    color: #172033;
+    -webkit-text-size-adjust: 100%;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+input,
+select {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+/* =========================================================
+   NAVEGAÇÃO
+========================================================= */
+
+.app {
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+/*
+   CORREÇÃO PRINCIPAL:
+
+   Todas as páginas ficam escondidas.
+   Somente .active aparece.
+
+   Isso impede que a tela de login continue
+   aparecendo depois do login.
+*/
+.page {
+    display: none !important;
+}
+
+.page.active {
+    display: block !important;
+}
+
+/*
+   A tela de login precisa ser flex apenas quando ativa.
+*/
+.login-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    align-items: center;
+    justify-content: center;
+    padding:
+        max(20px, env(safe-area-inset-top))
+        max(20px, env(safe-area-inset-right))
+        max(20px, env(safe-area-inset-bottom))
+        max(20px, env(safe-area-inset-left));
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
+}
+
+.login-page.active {
+    display: flex !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.topbar {
+    background: #0f172a;
+    color: white;
+    min-height: 64px;
+    padding:
+        12px
+        max(22px, env(safe-area-inset-right))
+        12px
+        max(22px, env(safe-area-inset-left));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+
+.topbar-title {
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.topbar-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-badge {
+    background: #1e293b;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.container {
+    width: 100%;
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 25px;
+}
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+.login-box {
+    width: 100%;
+    max-width: 420px;
+    background: white;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+
+.login-logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-logo h1 {
+    margin: 0 0 8px;
+    color: #0f172a;
+}
+
+.login-logo p {
+    margin: 0;
+    color: #64748b;
+}
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(15,23,42,.08);
+}
+
+.card h2,
+.card h3 {
+    margin-top: 0;
+}
+
+/* =========================================================
+   TÍTULOS
+========================================================= */
+
+.page-title {
+    margin-bottom: 20px;
+}
+
+.page-title h1 {
+    margin: 0 0 5px;
+    font-size: 28px;
+}
+
+.page-title p {
+    margin: 0;
+    color: #64748b;
+}
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.grid {
+    display: grid;
+    gap: 16px;
+}
+
+.grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* =========================================================
+   CAMPOS
+========================================================= */
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.field label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #334155;
+}
+
+input,
+select {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 9px 12px;
+    background: white;
+    color: #0f172a;
+    outline: none;
+    font-size: 16px;
+}
+
+input:focus,
+select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+}
+
+input[readonly] {
+    background: #f8fafc;
+}
+
+/* =========================================================
+   BOTÕES
+========================================================= */
+
+.btn {
+    border: 0;
+    border-radius: 9px;
+    padding: 11px 17px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: .15s;
+    min-height: 44px;
+    touch-action: manipulation;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn:disabled {
+    opacity: .65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.btn-success {
+    background: #16a34a;
+    color: white;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-secondary {
+    background: #475569;
+    color: white;
+}
+
+.btn-light {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* =========================================================
+   MENU
+========================================================= */
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.menu-option {
+    min-height: 180px;
+    border: 2px solid #e2e8f0;
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    cursor: pointer;
+    text-align: left;
+    transition: .2s;
+    color: #172033;
+}
+
+.menu-option:hover {
+    border-color: #2563eb;
+    box-shadow: 0 8px 25px rgba(37,99,235,.12);
+    transform: translateY(-2px);
+}
+
+.menu-icon {
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+.menu-option h2 {
+    margin: 0 0 8px;
+}
+
+.menu-option p {
+    margin: 0;
+    color: #64748b;
+}
+
+/* =========================================================
+   SERVIÇOS
+========================================================= */
+
+.service-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.service-option {
+    min-height: 160px;
+    padding: 25px;
+    border-radius: 15px;
+    border: 2px solid #e2e8f0;
+    background: white;
+    cursor: pointer;
+    transition: .2s;
+    color: #172033;
+    text-align: left;
+}
+
+.service-option:hover {
+    border-color: #2563eb;
+    transform: translateY(-2px);
+}
+
+.service-option h2 {
+    margin-top: 0;
+}
+
+.service-option p {
+    color: #64748b;
+}
+
+/* =========================================================
+   SEÇÕES
+========================================================= */
+
+.section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 12px;
+}
+
+.section-title h2,
+.section-title h3 {
+    margin: 0;
+}
+
+/* =========================================================
+   TABELAS
+========================================================= */
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+th,
+td {
+    padding: 11px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    background: #f8fafc;
+    color: #334155;
+    font-size: 13px;
+}
+
+td input,
+td select {
+    min-height: 38px;
+}
+
+/* =========================================================
+   PEDÁGIOS
+========================================================= */
+
+.pedagio-section {
+    display: none;
+}
+
+.pedagio-section.active {
+    display: block;
+}
+
+.total-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   RESENHA
+========================================================= */
+
+.resenha {
+    background: #f8fafc;
+    border-left: 5px solid #2563eb;
+    padding: 20px;
+    border-radius: 8px;
+    line-height: 1.8;
+}
+
+.resenha strong {
+    color: #0f172a;
+}
+
+/* =========================================================
+   AÇÕES
+========================================================= */
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* =========================================================
+   ALERTAS
+========================================================= */
+
+.alert {
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: none;
+}
+
+.alert.show {
+    display: block;
+}
+
+.alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.alert-success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.alert-info {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading {
+    display: none;
+    text-align: center;
+    padding: 15px;
+    color: #475569;
+}
+
+.loading.show {
+    display: block;
+}
+
+/* =========================================================
+   RESUMOS
+========================================================= */
+
+.resumo-cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.resumo-card {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 2px 10px rgba(15,23,42,.06);
+}
+
+.resumo-card small {
+    color: #64748b;
+}
+
+.resumo-card strong {
+    display: block;
+    font-size: 22px;
+    margin-top: 5px;
+}
+
+.money {
+    font-weight: 700;
+    color: #166534;
+}
+
+.empty {
+    padding: 30px;
+    text-align: center;
+    color: #64748b;
+}
+
+.tag {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.tag-escolta {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.tag-preservacao {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.footer-note {
+    text-align: center;
+    color: #64748b;
+    font-size: 12px;
+    padding: 20px;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .grid-4,
+    .resumo-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid-3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* =========================================================
+   CELULAR
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .container {
+        padding: 15px;
+    }
+
+    .grid-2,
+    .grid-3,
+    .grid-4,
+    .menu-grid,
+    .service-options,
+    .resumo-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .topbar {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 14px 15px;
+    }
+
+    .topbar-user {
+        justify-content: space-between;
+    }
+
+    .topbar-user .btn {
+        flex-shrink: 0;
+    }
+
+    .login-box {
+        padding: 25px 20px;
+        border-radius: 14px;
+    }
+
+    .login-logo h1 {
+        font-size: 25px;
+    }
+
+    .page-title h1 {
+        font-size: 24px;
+    }
+
+    .card {
+        padding: 17px;
+        border-radius: 12px;
+    }
+
+    .menu-option,
+    .service-option {
+        min-height: 145px;
+        padding: 20px;
+    }
+
+    .menu-icon {
+        font-size: 34px;
+        margin-bottom: 10px;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .actions .btn {
+        width: 100%;
+    }
+
+    .section-title {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .section-title .btn {
+        width: 100%;
+    }
+
+    .total-box {
+        flex-direction: column;
+    }
+
+    /*
+       Evita que inputs de tabela fiquem apertados
+       em celulares.
+    */
+    table {
+        min-width: 680px;
+    }
+}
+
+/* =========================================================
+   CELULARES MUITO PEQUENOS
+========================================================= */
+
+@media (max-width: 380px) {
+
+    .container {
+        padding: 10px;
+    }
+
+    .card {
+        padding: 14px;
+    }
+
+    .login-box {
+        padding: 22px 16px;
+    }
+
+    .topbar-title {
+        font-size: 17px;
+    }
+
+    .user-badge {
+        max-width: 180px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+/* =========================================================
+   SAFARI / IPHONE
+========================================================= */
+
+@supports (-webkit-touch-callout: none) {
+
+    input,
+    select,
+    button {
+        font-size: 16px;
+    }
+
+    .login-page {
+        min-height: -webkit-fill-available;
+    }
+}
+</style>
 </head>
 
 <body>
 
 <div id="app">
 
-    <!-- =====================================================
-         LOGIN
-    ====================================================== -->
+<!-- =========================================================
+     LOGIN
+========================================================= -->
 
-    <section id="page-login" class="page active login-page">
+<section id="page-login" class="page active login-page">
 
-        <div class="login-box">
+    <div class="login-box">
 
-            <div class="login-logo">
-                <h1>Controle de Serviços</h1>
-                <p>Acesso ao sistema</p>
+        <div class="login-logo">
+            <h1>Controle de Serviços</h1>
+            <p>Acesso ao sistema</p>
+        </div>
+
+        <div id="loginAlert" class="alert"></div>
+
+        <form id="loginForm">
+
+            <div class="field" style="margin-bottom:15px;">
+                <label for="loginUsuario">Usuário</label>
+                <input
+                    type="text"
+                    id="loginUsuario"
+                    autocomplete="username"
+                    autocapitalize="none"
+                    spellcheck="false"
+                    required
+                >
             </div>
 
-            <div id="loginAlert" class="alert"></div>
+            <div class="field" style="margin-bottom:20px;">
+                <label for="loginSenha">Senha</label>
+                <input
+                    type="password"
+                    id="loginSenha"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
 
-            <form id="loginForm">
+            <button
+                type="submit"
+                class="btn btn-primary btn-block"
+                id="btnLogin"
+            >
+                Entrar
+            </button>
 
-                <div class="field" style="margin-bottom:15px;">
-                    <label for="loginUsuario">Usuário</label>
+        </form>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     SISTEMA
+========================================================= -->
+
+<div id="system" class="hidden">
+
+<header class="topbar">
+
+    <div class="topbar-title">
+        Controle de Serviços
+    </div>
+
+    <div class="topbar-user">
+
+        <span id="loggedUser" class="user-badge">
+            Usuário
+        </span>
+
+        <button
+            type="button"
+            class="btn btn-danger"
+            onclick="logout()"
+        >
+            Sair
+        </button>
+
+    </div>
+
+</header>
+
+
+<main class="container">
+
+<!-- =========================================================
+     MENU
+========================================================= -->
+
+<section id="page-menu" class="page">
+
+    <div class="page-title">
+        <h1>Menu Principal</h1>
+        <p>Selecione uma opção</p>
+    </div>
+
+    <div class="menu-grid">
+
+        <button
+            type="button"
+            class="menu-option"
+            onclick="showPage('page-service-type')"
+        >
+            <div class="menu-icon">📋</div>
+
+            <h2>Criar Registro</h2>
+
+            <p>
+                Registrar um novo serviço de Escolta
+                ou Preservação.
+            </p>
+        </button>
+
+        <button
+            type="button"
+            class="menu-option"
+            onclick="abrirRelatorios()"
+        >
+            <div class="menu-icon">📊</div>
+
+            <h2>Gerar Relatório</h2>
+
+            <p>
+                Consultar serviços e valores a receber.
+            </p>
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     TIPO DE SERVIÇO
+========================================================= -->
+
+<section id="page-service-type" class="page">
+
+    <div class="page-title">
+        <h1>Tipo de Serviço</h1>
+        <p>Selecione o tipo de registro</p>
+    </div>
+
+    <div class="service-options">
+
+        <button
+            type="button"
+            class="service-option"
+            onclick="abrirFormulario('Escolta')"
+        >
+            <div class="menu-icon">🚚</div>
+
+            <h2>Escolta</h2>
+
+            <p>
+                Registrar serviço de escolta.
+            </p>
+        </button>
+
+        <button
+            type="button"
+            class="service-option"
+            onclick="abrirFormulario('Preservação')"
+        >
+            <div class="menu-icon">🛡️</div>
+
+            <h2>Preservação</h2>
+
+            <p>
+                Registrar serviço de preservação.
+            </p>
+        </button>
+
+    </div>
+
+    <div class="actions">
+
+        <button
+            type="button"
+            class="btn btn-light"
+            onclick="showPage('page-menu')"
+        >
+            ← Voltar
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     FORMULÁRIO
+========================================================= -->
+
+<section id="page-service-form" class="page">
+
+    <div class="page-title">
+
+        <h1 id="formTitle">
+            Registro
+        </h1>
+
+        <p id="formSubtitle">
+            Preencha os dados do serviço.
+        </p>
+
+    </div>
+
+    <div id="formAlert" class="alert"></div>
+
+    <form id="serviceForm">
+
+        <input type="hidden" id="tipoServico">
+
+        <div class="card">
+
+            <div class="section-title">
+                <h2>Dados do Serviço</h2>
+            </div>
+
+            <div id="localFields" class="grid grid-3">
+
+                <div class="field">
+                    <label for="dataServico">Data</label>
+
+                    <input
+                        type="date"
+                        id="dataServico"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="localOrigem">Origem</label>
+
                     <input
                         type="text"
-                        id="loginUsuario"
-                        autocomplete="username"
+                        id="localOrigem"
+                        placeholder="Local de origem"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="localDestino">Destino</label>
+
+                    <input
+                        type="text"
+                        id="localDestino"
+                        placeholder="Local de destino"
+                    >
+                </div>
+
+            </div>
+
+            <div
+                id="preservacaoIdentificacao"
+                class="hidden"
+                style="margin-bottom:20px;"
+            >
+                <div class="alert alert-info show">
+                    <strong>Preservação CD</strong>
+                </div>
+            </div>
+
+            <div
+                class="grid grid-2"
+                style="margin-top:16px;"
+            >
+
+                <div class="field">
+                    <label for="qraMotorista">
+                        Motorista
+                    </label>
+
+                    <input
+                        type="text"
+                        id="qraMotorista"
                         required
                     >
                 </div>
 
-                <div class="field" style="margin-bottom:20px;">
-                    <label for="loginSenha">Senha</label>
+                <div class="field">
+                    <label for="qraSeguranca">
+                        Segurança
+                    </label>
+
                     <input
-                        type="password"
-                        id="loginSenha"
-                        autocomplete="current-password"
+                        type="text"
+                        id="qraSeguranca"
                         required
                     >
                 </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- HORÁRIOS -->
+
+        <div class="card">
+
+            <div class="section-title">
+                <h2>Controle de Horário e KM</h2>
+            </div>
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+                    <tr>
+                        <th>Etapa</th>
+                        <th>Hora</th>
+                        <th>KM</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr>
+                        <td>Inicial Deslocamento</td>
+
+                        <td>
+                            <input
+                                type="time"
+                                id="hrInicialDeslocamento"
+                                required
+                            >
+                        </td>
+
+                        <td>
+                            <input
+                                type="number"
+                                id="kmInicialDeslocamento"
+                                min="0"
+                                step="1"
+                                inputmode="numeric"
+                                required
+                            >
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td id="labelInicialServico">
+                            Inicial Escolta
+                        </td>
+
+                        <td>
+                            <input
+                                type="time"
+                                id="hrInicialServico"
+                                required
+                            >
+                        </td>
+
+                        <td>
+                            <input
+                                type="number"
+                                id="kmInicialServico"
+                                min="0"
+                                step="1"
+                                inputmode="numeric"
+                                required
+                            >
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td id="labelFinalServico">
+                            Final Escolta
+                        </td>
+
+                        <td>
+                            <input
+                                type="time"
+                                id="hrFinalServico"
+                                required
+                            >
+                        </td>
+
+                        <td>
+                            <input
+                                type="number"
+                                id="kmFinalServico"
+                                min="0"
+                                step="1"
+                                inputmode="numeric"
+                                required
+                            >
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Final Deslocamento</td>
+
+                        <td>
+                            <input
+                                type="time"
+                                id="hrFinalDeslocamento"
+                                required
+                            >
+                        </td>
+
+                        <td>
+                            <input
+                                type="number"
+                                id="kmFinalDeslocamento"
+                                min="0"
+                                step="1"
+                                inputmode="numeric"
+                                required
+                            >
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- PEDÁGIOS -->
+
+        <div class="card">
+
+            <div class="section-title">
+
+                <h2>Pedágios</h2>
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="togglePedagios()"
+                    id="btnPedagios"
+                >
+                    Incluir Pedágios
+                </button>
+
+            </div>
+
+            <div
+                id="pedagioSection"
+                class="pedagio-section"
+            >
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+                        <tr>
+                            <th>Nº</th>
+                            <th>Quantidade</th>
+                            <th>Valor Unitário</th>
+                            <th>Valor Total</th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="pedagiosBody"></tbody>
+
+                    </table>
+
+                </div>
+
+                <div
+                    class="total-box"
+                    style="margin-top:15px;"
+                >
+                    <span>Total dos Pedágios</span>
+
+                    <span id="totalPedagios">
+                        R$ 0,00
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="actions">
 
                 <button
                     type="submit"
-                    class="btn btn-primary btn-block"
-                    id="btnLogin"
+                    class="btn btn-success"
+                    id="btnRegistrar"
                 >
-                    Entrar
+                    Registrar
                 </button>
 
-            </form>
+                <button
+                    type="button"
+                    class="btn btn-light"
+                    onclick="showPage('page-service-type')"
+                >
+                    Cancelar
+                </button>
+
+            </div>
+
+            <div
+                id="saveLoading"
+                class="loading"
+            >
+                Salvando serviço no banco de dados...
+            </div>
 
         </div>
 
-    </section>
+    </form>
 
+</section>
 
-    <!-- =====================================================
-         APLICAÇÃO
-    ====================================================== -->
 
-    <div id="system" class="hidden">
+<!-- =========================================================
+     RESENHA
+========================================================= -->
 
-        <header class="topbar">
+<section id="page-resenha" class="page">
 
-            <div class="topbar-title">
-                Controle de Serviços
-            </div>
+    <div class="page-title">
+        <h1>Resenha do Registro</h1>
+        <p>Serviço registrado com sucesso.</p>
+    </div>
 
-            <div class="topbar-user">
+    <div class="card">
 
-                <span id="loggedUser" class="user-badge">
-                    Usuário
-                </span>
+        <div id="resenhaConteudo" class="resenha"></div>
 
-                <button
-                    class="btn btn-danger"
-                    onclick="logout()"
-                >
-                    Sair
-                </button>
+        <div class="actions">
 
-            </div>
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="novoRegistro()"
+            >
+                Novo Registro
+            </button>
 
-        </header>
+            <button
+                type="button"
+                class="btn btn-light"
+                onclick="showPage('page-menu')"
+            >
+                Menu Principal
+            </button>
 
-
-        <main class="container">
-
-            <!-- =================================================
-                 PÁGINA 2 - MENU
-            ================================================== -->
-
-            <section id="page-menu" class="page">
-
-                <div class="page-title">
-                    <h1>Menu Principal</h1>
-                    <p>Selecione uma opção</p>
-                </div>
-
-                <div class="menu-grid">
-
-                    <button
-                        class="menu-option"
-                        onclick="showPage('page-service-type')"
-                    >
-                        <div class="menu-icon">📋</div>
-
-                        <h2>Criar Registro</h2>
-
-                        <p>
-                            Registrar um novo serviço de Escolta
-                            ou Preservação.
-                        </p>
-                    </button>
-
-
-                    <button
-                        class="menu-option"
-                        onclick="abrirRelatorios()"
-                    >
-                        <div class="menu-icon">📊</div>
-
-                        <h2>Gerar Relatório</h2>
-
-                        <p>
-                            Consultar serviços e valores a receber.
-                        </p>
-                    </button>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 PÁGINA 3 - TIPO DE SERVIÇO
-            ================================================== -->
-
-            <section id="page-service-type" class="page">
-
-                <div class="page-title">
-                    <h1>Tipo de Serviço</h1>
-                    <p>Selecione o tipo de registro</p>
-                </div>
-
-                <div class="service-options">
-
-                    <button
-                        class="service-option"
-                        onclick="abrirFormulario('Escolta')"
-                    >
-                        <div class="menu-icon">🚚</div>
-
-                        <h2>Escolta</h2>
-
-                        <p>
-                            Registrar serviço de escolta.
-                        </p>
-                    </button>
-
-
-                    <button
-                        class="service-option"
-                        onclick="abrirFormulario('Preservação')"
-                    >
-                        <div class="menu-icon">🛡️</div>
-
-                        <h2>Preservação</h2>
-
-                        <p>
-                            Registrar serviço de preservação.
-                        </p>
-                    </button>
-
-                </div>
-
-                <div class="actions">
-                    <button
-                        class="btn btn-light"
-                        onclick="showPage('page-menu')"
-                    >
-                        ← Voltar
-                    </button>
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 FORMULÁRIO DE SERVIÇO
-            ================================================== -->
-
-            <section id="page-service-form" class="page">
-
-                <div class="page-title">
-
-                    <h1 id="formTitle">
-                        Registro
-                    </h1>
-
-                    <p id="formSubtitle">
-                        Preencha os dados do serviço.
-                    </p>
-
-                </div>
-
-                <div id="formAlert" class="alert"></div>
-
-                <form id="serviceForm">
-
-                    <input
-                        type="hidden"
-                        id="tipoServico"
-                    >
-
-
-                    <!-- DADOS DO SERVIÇO -->
-
-                    <div class="card">
-
-                        <div class="section-title">
-                            <h2>Dados do Serviço</h2>
-                        </div>
-
-                        <div
-                            id="localFields"
-                            class="grid grid-3"
-                        >
-
-                            <div class="field">
-                                <label for="dataServico">
-                                    Data
-                                </label>
-
-                                <input
-                                    type="date"
-                                    id="dataServico"
-                                    required
-                                >
-                            </div>
-
-                            <div class="field">
-                                <label for="localOrigem">
-                                    Origem
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="localOrigem"
-                                    placeholder="Local de origem"
-                                >
-                            </div>
-
-                            <div class="field">
-                                <label for="localDestino">
-                                    Destino
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="localDestino"
-                                    placeholder="Local de destino"
-                                >
-                            </div>
-
-                        </div>
-
-
-                        <div
-                            id="preservacaoIdentificacao"
-                            class="hidden"
-                            style="margin-bottom:20px;"
-                        >
-                            <div class="alert alert-info show">
-                                <strong>Preservação CD</strong>
-                            </div>
-                        </div>
-
-
-                        <div
-                            class="grid grid-2"
-                            style="margin-top:16px;"
-                        >
-
-                            <div class="field">
-                                <label for="qraMotorista">
-                                    Motorista
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="qraMotorista"
-                                    required
-                                >
-                            </div>
-
-                            <div class="field">
-                                <label for="qraSeguranca">
-                                    Segurança
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="qraSeguranca"
-                                    required
-                                >
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- HORÁRIOS E KM -->
-
-                    <div class="card">
-
-                        <div class="section-title">
-                            <h2>Controle de Horário e KM</h2>
-                        </div>
-
-                        <div class="table-wrap">
-
-                            <table>
-
-                                <thead>
-                                    <tr>
-                                        <th>Etapa</th>
-                                        <th>Hora</th>
-                                        <th>KM</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-
-                                    <tr>
-
-                                        <td>
-                                            Inicial Deslocamento
-                                        </td>
-
-                                        <td>
-                                            <input
-                                                type="time"
-                                                id="hrInicialDeslocamento"
-                                                required
-                                            >
-                                        </td>
-
-                                        <td>
-                                            <input
-                                                type="number"
-                                                id="kmInicialDeslocamento"
-                                                min="0"
-                                                step="1"
-                                                inputmode="numeric"
-                                                required
-                                            >
-                                        </td>
-
-                                    </tr>
-
-
-                                    <tr>
-
-                                        <td id="labelInicialServico">
-                                            Inicial Escolta
-                                        </td>
-
-                                        <td>
-                                            <input
-                                                type="time"
-                                                id="hrInicialServico"
-                                                required
-                                            >
-                                        </td>
-
-                                        <td>
-                                            <input
-                                                type="number"
-                                                id="kmInicialServico"
-                                                min="0"
-                                                step="1"
-                                                inputmode="numeric"
-                                                required
-                                            >
-                                        </td>
-
-                                    </tr>
-
-
-                                    <tr>
-
-                                        <td id="labelFinalServico">
-                                            Final Escolta
-                                        </td>
-
-                                        <td>
-                                            <input
-                                                type="time"
-                                                id="hrFinalServico"
-                                                required
-                                            >
-                                        </td>
-
-                                        <td>
-                                            <input
-                                                type="number"
-                                                id="kmFinalServico"
-                                                min="0"
-                                                step="1"
-                                                inputmode="numeric"
-                                                required
-                                            >
-                                        </td>
-
-                                    </tr>
-
-
-                                    <tr>
-
-                                        <td>
-                                            Final Deslocamento
-                                        </td>
-
-                                        <td>
-                                            <input
-                                                type="time"
-                                                id="hrFinalDeslocamento"
-                                                required
-                                            >
-                                        </td>
-
-                                        <td>
-                                            <input
-                                                type="number"
-                                                id="kmFinalDeslocamento"
-                                                min="0"
-                                                step="1"
-                                                inputmode="numeric"
-                                                required
-                                            >
-                                        </td>
-
-                                    </tr>
-
-                                </tbody>
-
-                            </table>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- PEDÁGIOS -->
-
-                    <div class="card">
-
-                        <div class="section-title">
-
-                            <h2>Pedágios</h2>
-
-                            <button
-                                type="button"
-                                class="btn btn-secondary"
-                                onclick="togglePedagios()"
-                                id="btnPedagios"
-                            >
-                                Incluir Pedágios
-                            </button>
-
-                        </div>
-
-
-                        <div
-                            id="pedagioSection"
-                            class="pedagio-section"
-                        >
-
-                            <div class="table-wrap">
-
-                                <table>
-
-                                    <thead>
-
-                                        <tr>
-                                            <th>Nº</th>
-                                            <th>Quantidade</th>
-                                            <th>Valor Unitário</th>
-                                            <th>Valor Total</th>
-                                        </tr>
-
-                                    </thead>
-
-                                    <tbody id="pedagiosBody"></tbody>
-
-                                </table>
-
-                            </div>
-
-
-                            <div
-                                class="total-box"
-                                style="margin-top:15px;"
-                            >
-
-                                <span>
-                                    Total dos Pedágios
-                                </span>
-
-                                <span id="totalPedagios">
-                                    R$ 0,00
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- BOTÕES -->
-
-                    <div class="card">
-
-                        <div class="actions">
-
-                            <button
-                                type="submit"
-                                class="btn btn-success"
-                                id="btnRegistrar"
-                            >
-                                Registrar
-                            </button>
-
-                            <button
-                                type="button"
-                                class="btn btn-light"
-                                onclick="showPage('page-service-type')"
-                            >
-                                Cancelar
-                            </button>
-
-                        </div>
-
-                        <div
-                            id="saveLoading"
-                            class="loading"
-                        >
-                            Salvando serviço no banco de dados...
-                        </div>
-
-                    </div>
-
-                </form>
-
-            </section>
-
-
-            <!-- =================================================
-                 RESENHA
-            ================================================== -->
-
-            <section id="page-resenha" class="page">
-
-                <div class="page-title">
-                    <h1>Resenha do Registro</h1>
-                    <p>Serviço registrado com sucesso.</p>
-                </div>
-
-                <div class="card">
-
-                    <div id="resenhaConteudo" class="resenha"></div>
-
-                    <div class="actions">
-
-                        <button
-                            class="btn btn-primary"
-                            onclick="novoRegistro()"
-                        >
-                            Novo Registro
-                        </button>
-
-                        <button
-                            class="btn btn-light"
-                            onclick="showPage('page-menu')"
-                        >
-                            Menu Principal
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 RELATÓRIOS
-            ================================================== -->
-
-            <section id="page-relatorios" class="page">
-
-                <div class="page-title">
-
-                    <h1>Relatórios</h1>
-
-                    <p>
-                        Consulte serviços e valores a receber.
-                    </p>
-
-                </div>
-
-
-                <!-- FILTROS -->
-
-                <div class="card">
-
-                    <div class="section-title">
-                        <h2>Filtros</h2>
-                    </div>
-
-                    <div class="grid grid-4">
-
-                        <div class="field">
-
-                            <label for="relDataInicial">
-                                Data Inicial
-                            </label>
-
-                            <input
-                                type="date"
-                                id="relDataInicial"
-                            >
-
-                        </div>
-
-
-                        <div class="field">
-
-                            <label for="relDataFinal">
-                                Data Final
-                            </label>
-
-                            <input
-                                type="date"
-                                id="relDataFinal"
-                            >
-
-                        </div>
-
-
-                        <div class="field">
-
-                            <label for="relTipo">
-                                Tipo de Serviço
-                            </label>
-
-                            <select id="relTipo">
-
-                                <option value="">
-                                    Todos
-                                </option>
-
-                                <option value="Escolta">
-                                    Escolta
-                                </option>
-
-                                <option value="Preservação">
-                                    Preservação
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="field">
-
-                            <label for="relNome">
-                                Nome / QRA
-                            </label>
-
-                            <input
-                                type="text"
-                                id="relNome"
-                                placeholder="Motorista ou segurança"
-                            >
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="actions">
-
-                        <button
-                            class="btn btn-primary"
-                            onclick="gerarRelatorioServicos()"
-                        >
-                            Pesquisar
-                        </button>
-
-                        <button
-                            class="btn btn-light"
-                            onclick="limparFiltrosRelatorio()"
-                        >
-                            Limpar
-                        </button>
-
-                    </div>
-
-                    <div
-                        id="relLoading"
-                        class="loading"
-                    >
-                        Consultando banco de dados...
-                    </div>
-
-                    <div
-                        id="relAlert"
-                        class="alert"
-                        style="margin-top:15px;"
-                    ></div>
-
-                </div>
-
-
-                <!-- RESULTADO POR NOME -->
-
-                <div class="card">
-
-                    <div class="section-title">
-
-                        <h2>
-                            Relatório por Nome
-                        </h2>
-
-                    </div>
-
-                    <div
-                        id="relatorioNomeResumo"
-                        class="resumo-cards"
-                        style="margin-bottom:20px;"
-                    ></div>
-
-                    <div class="table-wrap">
-
-                        <table>
-
-                            <thead>
-
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Serviço</th>
-                                    <th>Nome</th>
-                                    <th>Função</th>
-                                    <th>Valor</th>
-                                    <th>Pagamento</th>
-                                </tr>
-
-                            </thead>
-
-                            <tbody
-                                id="relatorioNomeBody"
-                            ></tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-
-                <!-- RELATÓRIO FINANCEIRO -->
-
-                <div class="card">
-
-                    <div class="section-title">
-
-                        <h2>
-                            Relatório Financeiro
-                        </h2>
-
-                        <button
-                            class="btn btn-primary"
-                            onclick="gerarRelatorioFinanceiro()"
-                        >
-                            Relatório Financeiro
-                        </button>
-
-                    </div>
-
-
-                    <div class="grid grid-3">
-
-                        <div class="field">
-
-                            <label for="finAno">
-                                Ano
-                            </label>
-
-                            <select id="finAno"></select>
-
-                        </div>
-
-
-                        <div class="field">
-
-                            <label for="finMes">
-                                Mês
-                            </label>
-
-                            <select id="finMes">
-
-                                <option value="1">
-                                    Janeiro
-                                </option>
-
-                                <option value="2">
-                                    Fevereiro
-                                </option>
-
-                                <option value="3">
-                                    Março
-                                </option>
-
-                                <option value="4">
-                                    Abril
-                                </option>
-
-                                <option value="5">
-                                    Maio
-                                </option>
-
-                                <option value="6">
-                                    Junho
-                                </option>
-
-                                <option value="7">
-                                    Julho
-                                </option>
-
-                                <option value="8">
-                                    Agosto
-                                </option>
-
-                                <option value="9">
-                                    Setembro
-                                </option>
-
-                                <option value="10">
-                                    Outubro
-                                </option>
-
-                                <option value="11">
-                                    Novembro
-                                </option>
-
-                                <option value="12">
-                                    Dezembro
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="field">
-
-                            <label for="finDia">
-                                Dia de Pagamento
-                            </label>
-
-                            <select id="finDia">
-
-                                <option value="25">
-                                    Dia 25
-                                </option>
-
-                                <option value="10">
-                                    Dia 10
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        id="financeiroLoading"
-                        class="loading"
-                    >
-                        Gerando relatório financeiro...
-                    </div>
-
-
-                    <div
-                        id="financeiroAlert"
-                        class="alert"
-                        style="margin-top:15px;"
-                    ></div>
-
-
-                    <div
-                        id="financeiroResultado"
-                        style="margin-top:20px;"
-                    >
-
-                        <div class="table-wrap">
-
-                            <table>
-
-                                <thead>
-
-                                    <tr>
-                                        <th>Nome</th>
-                                        <th>Função</th>
-                                        <th>Quantidade de Serviços</th>
-                                        <th>Total a Receber</th>
-                                    </tr>
-
-                                </thead>
-
-                                <tbody
-                                    id="financeiroBody"
-                                ></tbody>
-
-                            </table>
-
-                        </div>
-
-
-                        <div
-                            id="financeiroTotal"
-                            class="total-box"
-                            style="margin-top:20px;"
-                        >
-
-                            <span>
-                                Total Geral a Pagar
-                            </span>
-
-                            <span>
-                                R$ 0,00
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="actions">
-
-                    <button
-                        class="btn btn-light"
-                        onclick="showPage('page-menu')"
-                    >
-                        ← Menu Principal
-                    </button>
-
-                </div>
-
-            </section>
-
-        </main>
-
-        <div class="footer-note">
-            Sistema de Controle de Serviços
         </div>
 
     </div>
+
+</section>
+
+
+<!-- =========================================================
+     RELATÓRIOS
+========================================================= -->
+
+<section id="page-relatorios" class="page">
+
+    <div class="page-title">
+
+        <h1>Relatórios</h1>
+
+        <p>
+            Consulte serviços e valores a receber.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="section-title">
+            <h2>Filtros</h2>
+        </div>
+
+        <div class="grid grid-4">
+
+            <div class="field">
+                <label for="relDataInicial">
+                    Data Inicial
+                </label>
+
+                <input
+                    type="date"
+                    id="relDataInicial"
+                >
+            </div>
+
+            <div class="field">
+                <label for="relDataFinal">
+                    Data Final
+                </label>
+
+                <input
+                    type="date"
+                    id="relDataFinal"
+                >
+            </div>
+
+            <div class="field">
+
+                <label for="relTipo">
+                    Tipo de Serviço
+                </label>
+
+                <select id="relTipo">
+
+                    <option value="">Todos</option>
+
+                    <option value="Escolta">
+                        Escolta
+                    </option>
+
+                    <option value="Preservação">
+                        Preservação
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="field">
+
+                <label for="relNome">
+                    Nome / QRA
+                </label>
+
+                <input
+                    type="text"
+                    id="relNome"
+                    placeholder="Motorista ou segurança"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="actions">
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="gerarRelatorioServicos()"
+            >
+                Pesquisar
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-light"
+                onclick="limparFiltrosRelatorio()"
+            >
+                Limpar
+            </button>
+
+        </div>
+
+        <div
+            id="relLoading"
+            class="loading"
+        >
+            Consultando banco de dados...
+        </div>
+
+        <div
+            id="relAlert"
+            class="alert"
+            style="margin-top:15px;"
+        ></div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="section-title">
+            <h2>Relatório por Nome</h2>
+        </div>
+
+        <div
+            id="relatorioNomeResumo"
+            class="resumo-cards"
+            style="margin-bottom:20px;"
+        ></div>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Serviço</th>
+                    <th>Nome</th>
+                    <th>Função</th>
+                    <th>Valor</th>
+                    <th>Pagamento</th>
+                </tr>
+                </thead>
+
+                <tbody id="relatorioNomeBody"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="section-title">
+
+            <h2>Relatório Financeiro</h2>
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="gerarRelatorioFinanceiro()"
+            >
+                Relatório Financeiro
+            </button>
+
+        </div>
+
+
+        <div class="grid grid-3">
+
+            <div class="field">
+
+                <label for="finAno">
+                    Ano
+                </label>
+
+                <select id="finAno"></select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="finMes">
+                    Mês
+                </label>
+
+                <select id="finMes">
+
+                    <option value="1">Janeiro</option>
+                    <option value="2">Fevereiro</option>
+                    <option value="3">Março</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Maio</option>
+                    <option value="6">Junho</option>
+                    <option value="7">Julho</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Setembro</option>
+                    <option value="10">Outubro</option>
+                    <option value="11">Novembro</option>
+                    <option value="12">Dezembro</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="finDia">
+                    Dia de Pagamento
+                </label>
+
+                <select id="finDia">
+
+                    <option value="25">
+                        Dia 25
+                    </option>
+
+                    <option value="10">
+                        Dia 10
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="financeiroLoading"
+            class="loading"
+        >
+            Gerando relatório financeiro...
+        </div>
+
+
+        <div
+            id="financeiroAlert"
+            class="alert"
+            style="margin-top:15px;"
+        ></div>
+
+
+        <div
+            id="financeiroResultado"
+            style="margin-top:20px;"
+        >
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                    <tr>
+                        <th>Nome</th>
+                        <th>Função</th>
+                        <th>Quantidade de Serviços</th>
+                        <th>Total a Receber</th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="financeiroBody"></tbody>
+
+                </table>
+
+            </div>
+
+
+            <div
+                id="financeiroTotal"
+                class="total-box"
+                style="margin-top:20px;"
+            >
+
+                <span>
+                    Total Geral a Pagar
+                </span>
+
+                <span>
+                    R$ 0,00
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="actions">
+
+        <button
+            type="button"
+            class="btn btn-light"
+            onclick="showPage('page-menu')"
+        >
+            ← Menu Principal
+        </button>
+
+    </div>
+
+</section>
+
+</main>
+
+<div class="footer-note">
+    Sistema de Controle de Serviços
+</div>
+
+</div>
 
 </div>
 
 
 <script>
-/* ============================================================
-   CONFIGURAÇÃO SUPABASE
-   ============================================================
+/* =========================================================
+   SUPABASE
+========================================================= */
 
-   SUBSTITUA os dois valores abaixo pelos valores do seu projeto.
+const SUPABASE_URL =
+    "https://oayzogefcfelqjiqwplq.supabase.co";
 
-   Supabase:
-   Project Settings → API
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_7kt1pi8N46d7i3S5VYWl1w_JkEHUgHS";
 
-   Use a Publishable Key.
-
-   NUNCA coloque a service_role key neste arquivo.
-============================================================ */
-
-const SUPABASE_URL = "https://oayzogefcfelqjiqwplq.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7kt1pi8N46d7i3S5VYWl1w_JkEHUgHS";
-
-
-/* Cliente Supabase */
-
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY,
-    {
-        auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY,
+        {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true
+            }
         }
-    }
-);
+    );
 
 
-/* ============================================================
+/* =========================================================
    VARIÁVEIS
-============================================================ */
+========================================================= */
 
 let usuarioAtual = null;
 let usuarioBanco = null;
-
 let tipoServicoAtual = null;
-
 let ultimoServicoSalvo = null;
-
 let servicosRelatorioAtual = [];
 
 
-/* ============================================================
+/* =========================================================
    UTILITÁRIOS
-============================================================ */
+========================================================= */
 
 function escapeHtml(valor) {
 
-    if (valor === null || valor === undefined) {
+    if (
+        valor === null ||
+        valor === undefined
+    ) {
         return "";
     }
 
@@ -1572,22 +1728,20 @@ function escapeHtml(valor) {
 
 function formatarMoeda(valor) {
 
-    const numero = Number(valor || 0);
-
-    return numero.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL"
-    });
+    return Number(valor || 0)
+        .toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        });
 }
 
 
 function formatarData(data) {
 
-    if (!data) {
-        return "";
-    }
+    if (!data) return "";
 
-    const partes = String(data).split("-");
+    const partes =
+        String(data).split("-");
 
     if (partes.length !== 3) {
         return data;
@@ -1601,17 +1755,15 @@ function dataHojeISO() {
 
     const agora = new Date();
 
-    const ano = agora.getFullYear();
-
-    const mes = String(
-        agora.getMonth() + 1
-    ).padStart(2, "0");
-
-    const dia = String(
-        agora.getDate()
-    ).padStart(2, "0");
-
-    return `${ano}-${mes}-${dia}`;
+    return [
+        agora.getFullYear(),
+        String(
+            agora.getMonth() + 1
+        ).padStart(2, "0"),
+        String(
+            agora.getDate()
+        ).padStart(2, "0")
+    ].join("-");
 }
 
 
@@ -1625,13 +1777,16 @@ function normalizarTexto(texto) {
 }
 
 
-function mostrarAlerta(id, mensagem, tipo = "error") {
+function mostrarAlerta(
+    id,
+    mensagem,
+    tipo = "error"
+) {
 
-    const elemento = document.getElementById(id);
+    const elemento =
+        document.getElementById(id);
 
-    if (!elemento) {
-        return;
-    }
+    if (!elemento) return;
 
     elemento.className =
         `alert alert-${tipo} show`;
@@ -1642,35 +1797,48 @@ function mostrarAlerta(id, mensagem, tipo = "error") {
 
 function esconderAlerta(id) {
 
-    const elemento = document.getElementById(id);
+    const elemento =
+        document.getElementById(id);
 
-    if (!elemento) {
-        return;
-    }
+    if (!elemento) return;
 
     elemento.className = "alert";
     elemento.textContent = "";
 }
 
 
-/* ============================================================
+/* =========================================================
    NAVEGAÇÃO
-============================================================ */
+========================================================= */
 
 function showPage(id) {
 
+    /*
+       Esconde TODAS as páginas antes
+       de mostrar a desejada.
+    */
     document
         .querySelectorAll(".page")
         .forEach(page => {
             page.classList.remove("active");
         });
 
+
     const pagina =
         document.getElementById(id);
 
-    if (pagina) {
-        pagina.classList.add("active");
+
+    if (!pagina) {
+        console.error(
+            "Página não encontrada:",
+            id
+        );
+        return;
     }
+
+
+    pagina.classList.add("active");
+
 
     window.scrollTo({
         top: 0,
@@ -1679,23 +1847,49 @@ function showPage(id) {
 }
 
 
-/* ============================================================
-   LOGIN
-============================================================ */
-
 /*
-   O sistema transforma:
-
-   lima
-   ↓
-   lima@seusistema.local
-
-   anderson
-   ↓
-   anderson@seusistema.local
-
-   Portanto, crie esses usuários no Supabase Auth.
+   Função central para entrar no sistema.
+   Ela garante que a tela de login seja
+   realmente escondida.
 */
+function entrarNoSistema(usuario) {
+
+    document
+        .getElementById("loggedUser")
+        .textContent = usuario;
+
+
+    document
+        .getElementById("page-login")
+        .classList
+        .remove("active");
+
+
+    document
+        .getElementById("system")
+        .classList
+        .remove("hidden");
+
+
+    /*
+       Pequeno reforço:
+       garante display correto mesmo
+       em Safari/Chrome mobile.
+    */
+    document
+        .querySelectorAll("#system .page")
+        .forEach(page => {
+            page.classList.remove("active");
+        });
+
+
+    showPage("page-menu");
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
 
 function usuarioParaEmail(usuario) {
 
@@ -1714,6 +1908,7 @@ async function login(event) {
 
     esconderAlerta("loginAlert");
 
+
     const usuario =
         document
             .getElementById("loginUsuario")
@@ -1721,10 +1916,12 @@ async function login(event) {
             .trim()
             .toLowerCase();
 
+
     const senha =
         document
             .getElementById("loginSenha")
             .value;
+
 
     if (!usuario || !senha) {
 
@@ -1740,6 +1937,7 @@ async function login(event) {
     const btn =
         document.getElementById("btnLogin");
 
+
     btn.disabled = true;
     btn.textContent = "Entrando...";
 
@@ -1750,27 +1948,27 @@ async function login(event) {
             usuarioParaEmail(usuario);
 
 
-        const {
-            data,
-            error
-        } = await supabaseClient.auth.signInWithPassword({
-            email: email,
-            password: senha
-        });
+        const resultado =
+            await supabaseClient.auth
+                .signInWithPassword({
+                    email,
+                    password: senha
+                });
 
 
-        if (error) {
-            throw error;
+        if (resultado.error) {
+            throw resultado.error;
         }
 
 
-        usuarioAtual = data.user;
+        usuarioAtual =
+            resultado.data.user;
 
 
         /*
-           Tenta localizar o usuário na tabela usuarios.
+           Busca dados complementares
+           do usuário.
         */
-
         const resultadoUsuario =
             await supabaseClient
                 .from("usuarios")
@@ -1787,25 +1985,10 @@ async function login(event) {
         }
 
 
-        document
-            .getElementById("loggedUser")
-            .textContent =
-            usuario;
-
-
-        document
-            .getElementById("system")
-            .classList
-            .remove("hidden");
-
-
-        document
-            .getElementById("page-login")
-            .classList
-            .remove("active");
-
-
-        showPage("page-menu");
+        /*
+           AQUI acontece a troca da tela.
+        */
+        entrarNoSistema(usuario);
 
 
         document
@@ -1816,7 +1999,10 @@ async function login(event) {
 
     catch (error) {
 
-        console.error(error);
+        console.error(
+            "Erro no login:",
+            error
+        );
 
         mostrarAlerta(
             "loginAlert",
@@ -1833,44 +2019,79 @@ async function login(event) {
 }
 
 
+/* =========================================================
+   LOGOUT
+========================================================= */
+
 async function logout() {
 
-    await supabaseClient.auth.signOut();
+    try {
+        await supabaseClient.auth.signOut();
+    }
+    catch (error) {
+        console.error(error);
+    }
+
 
     usuarioAtual = null;
     usuarioBanco = null;
+
 
     document
         .getElementById("system")
         .classList
         .add("hidden");
 
+
     document
         .getElementById("page-login")
         .classList
         .add("active");
 
+
     esconderAlerta("loginAlert");
 
+
+    /*
+       Como page-login é a única página
+       ativa, ela volta corretamente.
+    */
     showPage("page-login");
 }
 
 
-/* ============================================================
-   INICIALIZAÇÃO DA SESSÃO
-============================================================ */
+/* =========================================================
+   SESSÃO
+========================================================= */
 
 async function verificarSessao() {
 
-    const {
-        data
-    } = await supabaseClient.auth.getSession();
+    try {
+
+        const resultado =
+            await supabaseClient.auth
+                .getSession();
 
 
-    if (data && data.session) {
+        const session =
+            resultado.data?.session;
+
+
+        if (!session) {
+
+            document
+                .getElementById("system")
+                .classList
+                .add("hidden");
+
+            showPage("page-login");
+
+            return;
+        }
+
 
         usuarioAtual =
-            data.session.user;
+            session.user;
 
 
         const email =
@@ -1878,38 +2099,60 @@ async function verificarSessao() {
 
 
         const usuario =
-            email.split("@")[0];
+            email
+                .split("@")[0];
 
 
-        document
-            .getElementById("loggedUser")
-            .textContent =
-            usuario;
+        /*
+           Busca usuário na tabela.
+        */
+        const resultadoUsuario =
+            await supabaseClient
+                .from("usuarios")
+                .select("*")
+                .eq("usuario", usuario)
+                .maybeSingle();
 
+
+        if (!resultadoUsuario.error) {
+
+            usuarioBanco =
+                resultadoUsuario.data;
+
+        }
+
+
+        entrarNoSistema(usuario);
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Erro ao verificar sessão:",
+            error
+        );
 
         document
             .getElementById("system")
             .classList
-            .remove("hidden");
+            .add("hidden");
 
-
-        document
-            .getElementById("page-login")
-            .classList
-            .remove("active");
-
-
-        showPage("page-menu");
+        showPage("page-login");
     }
 }
 
 
+/*
+   Monitoramento da autenticação.
+*/
 supabaseClient.auth.onAuthStateChange(
     (event, session) => {
 
         if (event === "SIGNED_OUT") {
 
             usuarioAtual = null;
+            usuarioBanco = null;
 
             document
                 .getElementById("system")
@@ -1921,18 +2164,20 @@ supabaseClient.auth.onAuthStateChange(
                 .classList
                 .add("active");
 
+            showPage("page-login");
         }
     }
 );
 
 
-/* ============================================================
-   ABRIR FORMULÁRIO
-============================================================ */
+/* =========================================================
+   FORMULÁRIO
+========================================================= */
 
 function abrirFormulario(tipo) {
 
     tipoServicoAtual = tipo;
+
 
     document
         .getElementById("tipoServico")
@@ -1945,7 +2190,6 @@ function abrirFormulario(tipo) {
     const subtitulo =
         document.getElementById("formSubtitle");
 
-
     const localFields =
         document.getElementById("localFields");
 
@@ -1953,7 +2197,6 @@ function abrirFormulario(tipo) {
         document.getElementById(
             "preservacaoIdentificacao"
         );
-
 
     const labelInicial =
         document.getElementById(
@@ -1974,13 +2217,11 @@ function abrirFormulario(tipo) {
         subtitulo.textContent =
             "Preencha os dados da escolta.";
 
-        localFields.classList.remove(
-            "hidden"
-        );
+        localFields.classList
+            .remove("hidden");
 
-        preservacao.classList.add(
-            "hidden"
-        );
+        preservacao.classList
+            .add("hidden");
 
         labelInicial.textContent =
             "Inicial Escolta";
@@ -1989,7 +2230,6 @@ function abrirFormulario(tipo) {
             "Final Escolta";
 
     }
-
     else {
 
         titulo.textContent =
@@ -1998,20 +2238,17 @@ function abrirFormulario(tipo) {
         subtitulo.textContent =
             "Preencha os dados da preservação.";
 
-        localFields.classList.add(
-            "hidden"
-        );
+        localFields.classList
+            .add("hidden");
 
-        preservacao.classList.remove(
-            "hidden"
-        );
+        preservacao.classList
+            .remove("hidden");
 
         labelInicial.textContent =
             "Inicial Preservação";
 
         labelFinal.textContent =
             "Final Preservação";
-
     }
 
 
@@ -2020,10 +2257,6 @@ function abrirFormulario(tipo) {
     showPage("page-service-form");
 }
 
-
-/* ============================================================
-   LIMPAR FORMULÁRIO
-============================================================ */
 
 function limparFormulario() {
 
@@ -2071,9 +2304,9 @@ function limparFormulario() {
 }
 
 
-/* ============================================================
+/* =========================================================
    PEDÁGIOS
-============================================================ */
+========================================================= */
 
 function togglePedagios() {
 
@@ -2082,8 +2315,11 @@ function togglePedagios() {
             "pedagioSection"
         );
 
+
     const ativo =
-        section.classList.toggle("active");
+        section.classList.toggle(
+            "active"
+        );
 
 
     const botao =
@@ -2100,12 +2336,10 @@ function togglePedagios() {
         criarLinhasPedagio();
 
     }
-
     else {
 
         botao.textContent =
             "Incluir Pedágios";
-
     }
 }
 
@@ -2123,7 +2357,11 @@ function criarLinhasPedagio() {
     }
 
 
-    for (let i = 1; i <= 10; i++) {
+    for (
+        let i = 1;
+        i <= 10;
+        i++
+    ) {
 
         const tr =
             document.createElement("tr");
@@ -2131,7 +2369,12 @@ function criarLinhasPedagio() {
 
         let options = "";
 
-        for (let q = 1; q <= 10; q++) {
+
+        for (
+            let q = 1;
+            q <= 10;
+            q++
+        ) {
 
             options +=
                 `<option value="${q}">${q}</option>`;
@@ -2140,9 +2383,7 @@ function criarLinhasPedagio() {
 
         tr.innerHTML = `
 
-            <td>
-                ${i}
-            </td>
+            <td>${i}</td>
 
             <td>
                 <select
@@ -2161,7 +2402,7 @@ function criarLinhasPedagio() {
                     min="0"
                     step="0.01"
                     value="0"
-                    placeholder="0,00"
+                    inputmode="decimal"
                 >
             </td>
 
@@ -2174,7 +2415,6 @@ function criarLinhasPedagio() {
                     readonly
                 >
             </td>
-
         `;
 
 
@@ -2211,19 +2451,26 @@ function calcularPedagios() {
 
 
     document
-        .querySelectorAll(".pedagio-quantidade")
+        .querySelectorAll(
+            ".pedagio-quantidade"
+        )
         .forEach(select => {
 
             const numero =
                 select.dataset.numero;
 
+
             const quantidade =
-                Number(select.value || 0);
+                Number(
+                    select.value || 0
+                );
+
 
             const inputValor =
                 document.querySelector(
                     `.pedagio-unitario[data-numero="${numero}"]`
                 );
+
 
             const inputTotal =
                 document.querySelector(
@@ -2232,7 +2479,9 @@ function calcularPedagios() {
 
 
             const unitario =
-                Number(inputValor.value || 0);
+                Number(
+                    inputValor.value || 0
+                );
 
 
             const total =
@@ -2244,7 +2493,6 @@ function calcularPedagios() {
 
 
             totalGeral += total;
-
         });
 
 
@@ -2261,15 +2509,21 @@ function obterPedagiosFormulario() {
 
 
     document
-        .querySelectorAll(".pedagio-quantidade")
+        .querySelectorAll(
+            ".pedagio-quantidade"
+        )
         .forEach(select => {
 
             const numero =
-                Number(select.dataset.numero);
+                Number(
+                    select.dataset.numero
+                );
 
 
             const quantidade =
-                Number(select.value || 0);
+                Number(
+                    select.value || 0
+                );
 
 
             const inputValor =
@@ -2289,30 +2543,17 @@ function obterPedagiosFormulario() {
                 valorUnitario;
 
 
-            /*
-               Não grava linhas sem valor.
-            */
-
             if (valorUnitario > 0) {
 
                 pedagios.push({
-
-                    numero:
-                        numero,
-
-                    quantidade:
-                        quantidade,
-
+                    numero,
+                    quantidade,
                     valor_unitario:
                         valorUnitario,
-
                     valor_total:
                         valorTotal
-
                 });
-
             }
-
         });
 
 
@@ -2320,18 +2561,17 @@ function obterPedagiosFormulario() {
 }
 
 
-/* ============================================================
+/* =========================================================
    CÁLCULOS
-============================================================ */
+========================================================= */
 
 function horaParaMinutos(hora) {
 
-    if (!hora) {
-        return null;
-    }
+    if (!hora) return null;
 
     const partes =
         hora.split(":");
+
 
     return (
         Number(partes[0]) * 60 +
@@ -2340,7 +2580,10 @@ function horaParaMinutos(hora) {
 }
 
 
-function calcularDiferencaHoras(inicio, fim) {
+function calcularDiferencaHoras(
+    inicio,
+    fim
+) {
 
     let a =
         horaParaMinutos(inicio);
@@ -2349,13 +2592,16 @@ function calcularDiferencaHoras(inicio, fim) {
         horaParaMinutos(fim);
 
 
-    if (a === null || b === null) {
+    if (
+        a === null ||
+        b === null
+    ) {
         return 0;
     }
 
 
     if (b < a) {
-        b += 24 * 60;
+        b += 1440;
     }
 
 
@@ -2368,8 +2614,10 @@ function formatarTempo(minutos) {
     const total =
         Number(minutos || 0);
 
+
     const horas =
         Math.floor(total / 60);
+
 
     const mins =
         total % 60;
@@ -2383,10 +2631,13 @@ function formatarTempo(minutos) {
 }
 
 
-function calcularDataPagamento(dataServico) {
+function calcularDataPagamento(
+    dataServico
+) {
 
     const partes =
         dataServico.split("-");
+
 
     let ano =
         Number(partes[0]);
@@ -2394,30 +2645,22 @@ function calcularDataPagamento(dataServico) {
     let mes =
         Number(partes[1]);
 
-    let dia =
+    const dia =
         Number(partes[2]);
 
 
     if (dia <= 15) {
 
         return `${ano}-${String(mes).padStart(2,"0")}-25`;
-
     }
 
-
-    /*
-       Dia 16 em diante:
-       pagamento dia 10 do mês seguinte.
-    */
 
     mes++;
 
 
     if (mes > 12) {
-
         mes = 1;
         ano++;
-
     }
 
 
@@ -2428,30 +2671,38 @@ function calcularDataPagamento(dataServico) {
 function calcularValoresFormulario() {
 
     const horaInicial =
-        document.getElementById(
-            "hrInicialDeslocamento"
-        ).value;
+        document
+            .getElementById(
+                "hrInicialDeslocamento"
+            )
+            .value;
 
 
     const horaFinalServico =
-        document.getElementById(
-            "hrFinalServico"
-        ).value;
+        document
+            .getElementById(
+                "hrFinalServico"
+            )
+            .value;
 
 
     const kmInicial =
         Number(
-            document.getElementById(
-                "kmInicialDeslocamento"
-            ).value || 0
+            document
+                .getElementById(
+                    "kmInicialDeslocamento"
+                )
+                .value || 0
         );
 
 
     const kmFinal =
         Number(
-            document.getElementById(
-                "kmFinalDeslocamento"
-            ).value || 0
+            document
+                .getElementById(
+                    "kmFinalDeslocamento"
+                )
+                .value || 0
         );
 
 
@@ -2471,7 +2722,6 @@ function calcularValoresFormulario() {
         throw new Error(
             "O KM final não pode ser menor que o KM inicial."
         );
-
     }
 
 
@@ -2497,7 +2747,9 @@ function calcularValoresFormulario() {
         pedagios.reduce(
             (total, p) =>
                 total +
-                Number(p.valor_total || 0),
+                Number(
+                    p.valor_total || 0
+                ),
             0
         );
 
@@ -2515,7 +2767,9 @@ function calcularValoresFormulario() {
 
     const dataServico =
         document
-            .getElementById("dataServico")
+            .getElementById(
+                "dataServico"
+            )
             .value;
 
 
@@ -2526,7 +2780,6 @@ function calcularValoresFormulario() {
 
 
     return {
-
         tempoTotal,
         kmTotal,
         valorReembolsoKM,
@@ -2538,14 +2791,13 @@ function calcularValoresFormulario() {
         totalSeguranca,
         dataPagamento,
         pedagios
-
     };
 }
 
 
-/* ============================================================
-   VALIDAR FORMULÁRIO
-============================================================ */
+/* =========================================================
+   VALIDAÇÃO
+========================================================= */
 
 function validarFormulario() {
 
@@ -2574,13 +2826,14 @@ function validarFormulario() {
         throw new Error(
             "O KM Final do Deslocamento não pode ser menor que o KM Inicial."
         );
-
     }
 
 
     const data =
         document
-            .getElementById("dataServico")
+            .getElementById(
+                "dataServico"
+            )
             .value;
 
 
@@ -2589,15 +2842,13 @@ function validarFormulario() {
         throw new Error(
             "Informe a data do serviço."
         );
-
     }
-
 }
 
 
-/* ============================================================
+/* =========================================================
    REGISTRAR SERVIÇO
-============================================================ */
+========================================================= */
 
 async function registrarServico(event) {
 
@@ -2617,20 +2868,26 @@ async function registrarServico(event) {
 
         const tipo =
             document
-                .getElementById("tipoServico")
+                .getElementById(
+                    "tipoServico"
+                )
                 .value;
 
 
         const dataServico =
             document
-                .getElementById("dataServico")
+                .getElementById(
+                    "dataServico"
+                )
                 .value;
 
 
         const localOrigem =
             tipo === "Escolta"
                 ? document
-                    .getElementById("localOrigem")
+                    .getElementById(
+                        "localOrigem"
+                    )
                     .value
                     .trim()
                 : null;
@@ -2639,7 +2896,9 @@ async function registrarServico(event) {
         const localDestino =
             tipo === "Escolta"
                 ? document
-                    .getElementById("localDestino")
+                    .getElementById(
+                        "localDestino"
+                    )
                     .value
                     .trim()
                 : null;
@@ -2647,87 +2906,76 @@ async function registrarServico(event) {
 
         const qraMotorista =
             document
-                .getElementById("qraMotorista")
+                .getElementById(
+                    "qraMotorista"
+                )
                 .value
                 .trim();
 
 
         const qraSeguranca =
             document
-                .getElementById("qraSeguranca")
+                .getElementById(
+                    "qraSeguranca"
+                )
                 .value
                 .trim();
 
 
-        const hrInicialDeslocamento =
-            document
-                .getElementById(
-                    "hrInicialDeslocamento"
-                )
-                .value;
+        const getValue =
+            id =>
+                document
+                    .getElementById(id)
+                    .value;
 
+
+        const getNumber =
+            id =>
+                Number(
+                    document
+                        .getElementById(id)
+                        .value
+                );
+
+
+        const hrInicialDeslocamento =
+            getValue(
+                "hrInicialDeslocamento"
+            );
 
         const kmInicialDeslocamento =
-            Number(
-                document
-                    .getElementById(
-                        "kmInicialDeslocamento"
-                    )
-                    .value
+            getNumber(
+                "kmInicialDeslocamento"
             );
-
 
         const hrInicialServico =
-            document
-                .getElementById(
-                    "hrInicialServico"
-                )
-                .value;
-
+            getValue(
+                "hrInicialServico"
+            );
 
         const kmInicialServico =
-            Number(
-                document
-                    .getElementById(
-                        "kmInicialServico"
-                    )
-                    .value
+            getNumber(
+                "kmInicialServico"
             );
-
 
         const hrFinalServico =
-            document
-                .getElementById(
-                    "hrFinalServico"
-                )
-                .value;
-
-
-        const kmFinalServico =
-            Number(
-                document
-                    .getElementById(
-                        "kmFinalServico"
-                    )
-                    .value
+            getValue(
+                "hrFinalServico"
             );
 
+        const kmFinalServico =
+            getNumber(
+                "kmFinalServico"
+            );
 
         const hrFinalDeslocamento =
-            document
-                .getElementById(
-                    "hrFinalDeslocamento"
-                )
-                .value;
-
+            getValue(
+                "hrFinalDeslocamento"
+            );
 
         const kmFinalDeslocamento =
-            Number(
-                document
-                    .getElementById(
-                        "kmFinalDeslocamento"
-                    )
-                    .value
+            getNumber(
+                "kmFinalDeslocamento"
             );
 
 
@@ -2739,15 +2987,14 @@ async function registrarServico(event) {
 
         btn.disabled = true;
 
+
         document
-            .getElementById("saveLoading")
+            .getElementById(
+                "saveLoading"
+            )
             .classList
             .add("show");
 
-
-        /*
-           Insere o serviço.
-        */
 
         const resultado =
             await supabaseClient
@@ -2843,60 +3090,49 @@ async function registrarServico(event) {
             resultado.data;
 
 
-        /*
-           Grava os pedágios.
-        */
-
         if (valores.pedagios.length > 0) {
 
             const dadosPedagios =
-                valores.pedagios.map(p => ({
+                valores.pedagios.map(
+                    p => ({
 
-                    servico_id:
-                        servico.id,
+                        servico_id:
+                            servico.id,
 
-                    numero:
-                        p.numero,
+                        numero:
+                            p.numero,
 
-                    quantidade:
-                        p.quantidade,
+                        quantidade:
+                            p.quantidade,
 
-                    valor_unitario:
-                        p.valor_unitario,
+                        valor_unitario:
+                            p.valor_unitario,
 
-                    valor_total:
-                        p.valor_total
+                        valor_total:
+                            p.valor_total
 
-                }));
+                    })
+                );
 
 
             const resultadoPedagios =
                 await supabaseClient
                     .from("pedagios")
-                    .insert(dadosPedagios);
+                    .insert(
+                        dadosPedagios
+                    );
 
 
             if (resultadoPedagios.error) {
-
-                /*
-                   Se o serviço foi criado mas
-                   os pedágios falharam, informa o erro.
-                */
-
                 throw resultadoPedagios.error;
-
             }
-
         }
 
 
         ultimoServicoSalvo = {
-
             ...servico,
-
             pedagios:
                 valores.pedagios
-
         };
 
 
@@ -2924,21 +3160,25 @@ async function registrarServico(event) {
     finally {
 
         document
-            .getElementById("btnRegistrar")
+            .getElementById(
+                "btnRegistrar"
+            )
             .disabled = false;
 
+
         document
-            .getElementById("saveLoading")
+            .getElementById(
+                "saveLoading"
+            )
             .classList
             .remove("show");
-
     }
 }
 
 
-/* ============================================================
+/* =========================================================
    RESENHA
-============================================================ */
+========================================================= */
 
 function mostrarResenha(servico) {
 
@@ -2957,119 +3197,165 @@ function mostrarResenha(servico) {
             ? `
                 <div>
                     <strong>
-                        ${escapeHtml(servico.local_origem)}
+                        ${escapeHtml(
+                            servico.local_origem
+                        )}
                     </strong>
                     x
                     <strong>
-                        ${escapeHtml(servico.local_destino)}
+                        ${escapeHtml(
+                            servico.local_destino
+                        )}
                     </strong>
                 </div>
-            `
+              `
             : `
                 <div>
-                    <strong>Preservação CD</strong>
+                    <strong>
+                        Preservação CD
+                    </strong>
                 </div>
-            `;
+              `;
 
 
-    const html = `
+    document
+        .getElementById(
+            "resenhaConteudo"
+        )
+        .innerHTML = `
 
         <div>
             <strong>Data do Serviço:</strong>
-            ${formatarData(servico.data_servico)}
+            ${formatarData(
+                servico.data_servico
+            )}
         </div>
 
         ${origemDestino}
 
         <div>
             <strong>Mot:</strong>
-            ${escapeHtml(servico.qra_motorista)}
+            ${escapeHtml(
+                servico.qra_motorista
+            )}
 
             &nbsp;&nbsp;
 
             <strong>Seg:</strong>
-            ${escapeHtml(servico.qra_seguranca)}
+            ${escapeHtml(
+                servico.qra_seguranca
+            )}
         </div>
 
         <br>
 
         <div>
-            <strong>Inicial Deslocamento:</strong>
-            ${escapeHtml(servico.hr_inicial_deslocamento)}
+            <strong>
+                Inicial Deslocamento:
+            </strong>
+            ${escapeHtml(
+                servico.hr_inicial_deslocamento
+            )}
             —
-            ${servico.km_inicial_deslocamento} KM
+            ${servico.km_inicial_deslocamento}
+            KM
         </div>
 
         <div>
-            <strong>Inicial ${nomeEtapa}:</strong>
-            ${escapeHtml(servico.hr_inicial_servico)}
+            <strong>
+                Inicial ${nomeEtapa}:
+            </strong>
+            ${escapeHtml(
+                servico.hr_inicial_servico
+            )}
             —
-            ${servico.km_inicial_servico} KM
+            ${servico.km_inicial_servico}
+            KM
         </div>
 
         <div>
-            <strong>Final ${nomeEtapa}:</strong>
-            ${escapeHtml(servico.hr_final_servico)}
+            <strong>
+                Final ${nomeEtapa}:
+            </strong>
+            ${escapeHtml(
+                servico.hr_final_servico
+            )}
             —
-            ${servico.km_final_servico} KM
+            ${servico.km_final_servico}
+            KM
         </div>
 
         <div>
-            <strong>Final Deslocamento:</strong>
-            ${escapeHtml(servico.hr_final_deslocamento)}
+            <strong>
+                Final Deslocamento:
+            </strong>
+            ${escapeHtml(
+                servico.hr_final_deslocamento
+            )}
             —
-            ${servico.km_final_deslocamento} KM
+            ${servico.km_final_deslocamento}
+            KM
         </div>
 
         <br>
 
         <div>
-            <strong>Total Percorrido:</strong>
+            <strong>
+                Total Percorrido:
+            </strong>
             ${servico.km_total} KM
         </div>
 
         <div>
             <strong>
-                Tempo total Início até final ${nomeEtapa}:
+                Tempo total Início até final
+                ${nomeEtapa}:
             </strong>
-            ${formatarTempo(servico.tempo_total_minutos)}
+            ${formatarTempo(
+                servico.tempo_total_minutos
+            )}
         </div>
 
         <br>
 
         <div>
-            <strong>Data de Pagamento:</strong>
-            ${formatarData(servico.data_pagamento)}
+            <strong>
+                Data de Pagamento:
+            </strong>
+            ${formatarData(
+                servico.data_pagamento
+            )}
         </div>
 
         <div>
-            <strong>Total Motorista:</strong>
-            ${formatarMoeda(servico.total_motorista)}
+            <strong>
+                Total Motorista:
+            </strong>
+            ${formatarMoeda(
+                servico.total_motorista
+            )}
         </div>
 
         <div>
-            <strong>Total Segurança:</strong>
-            ${formatarMoeda(servico.total_seguranca)}
+            <strong>
+                Total Segurança:
+            </strong>
+            ${formatarMoeda(
+                servico.total_seguranca
+            )}
         </div>
-
     `;
-
-
-    document
-        .getElementById("resenhaConteudo")
-        .innerHTML = html;
 }
 
 
 function novoRegistro() {
-
     showPage("page-service-type");
 }
 
 
-/* ============================================================
+/* =========================================================
    RELATÓRIOS
-============================================================ */
+========================================================= */
 
 function abrirRelatorios() {
 
@@ -3084,7 +3370,9 @@ function abrirRelatorios() {
 function prepararAnosFinanceiro() {
 
     const select =
-        document.getElementById("finAno");
+        document.getElementById(
+            "finAno"
+        );
 
 
     const anoAtual =
@@ -3094,10 +3382,6 @@ function prepararAnosFinanceiro() {
     select.innerHTML = "";
 
 
-    /*
-       Permite anos futuros.
-    */
-
     for (
         let ano = 2026;
         ano <= anoAtual + 10;
@@ -3105,68 +3389,94 @@ function prepararAnosFinanceiro() {
     ) {
 
         const option =
-            document.createElement("option");
+            document.createElement(
+                "option"
+            );
+
 
         option.value = ano;
         option.textContent = ano;
+
 
         if (ano === anoAtual) {
             option.selected = true;
         }
 
-        select.appendChild(option);
+
+        select.appendChild(
+            option
+        );
     }
 
 
     document
         .getElementById("finMes")
         .value =
-        String(new Date().getMonth() + 1);
+        String(
+            new Date().getMonth() + 1
+        );
 }
 
 
 function limparFiltrosRelatorio() {
 
     document
-        .getElementById("relDataInicial")
+        .getElementById(
+            "relDataInicial"
+        )
         .value = "";
 
 
     document
-        .getElementById("relDataFinal")
+        .getElementById(
+            "relDataFinal"
+        )
         .value = "";
 
 
     document
-        .getElementById("relTipo")
+        .getElementById(
+            "relTipo"
+        )
         .value = "";
 
 
     document
-        .getElementById("relNome")
+        .getElementById(
+            "relNome"
+        )
         .value = "";
 
 
     document
-        .getElementById("relatorioNomeBody")
+        .getElementById(
+            "relatorioNomeBody"
+        )
         .innerHTML = `
+
             <tr>
-                <td colspan="6" class="empty">
-                    Informe os filtros e clique em Pesquisar.
+                <td
+                    colspan="6"
+                    class="empty"
+                >
+                    Informe os filtros e clique
+                    em Pesquisar.
                 </td>
             </tr>
         `;
 
 
     document
-        .getElementById("relatorioNomeResumo")
+        .getElementById(
+            "relatorioNomeResumo"
+        )
         .innerHTML = "";
 }
 
 
-/* ============================================================
-   CONSULTA DE SERVIÇOS
-============================================================ */
+/* =========================================================
+   BUSCAR SERVIÇOS
+========================================================= */
 
 async function buscarServicosComFiltros() {
 
@@ -3213,7 +3523,6 @@ async function buscarServicosComFiltros() {
                 "data_servico",
                 dataInicial
             );
-
     }
 
 
@@ -3224,7 +3533,6 @@ async function buscarServicosComFiltros() {
                 "data_servico",
                 dataFinal
             );
-
     }
 
 
@@ -3235,7 +3543,6 @@ async function buscarServicosComFiltros() {
                 "tipo_servico",
                 tipo
             );
-
     }
 
 
@@ -3252,18 +3559,20 @@ async function buscarServicosComFiltros() {
 }
 
 
-/* ============================================================
+/* =========================================================
    RELATÓRIO POR NOME
-============================================================ */
+========================================================= */
 
 async function gerarRelatorioServicos() {
 
     esconderAlerta("relAlert");
 
+
     const loading =
         document.getElementById(
             "relLoading"
         );
+
 
     loading.classList.add("show");
 
@@ -3277,7 +3586,9 @@ async function gerarRelatorioServicos() {
         const nomePesquisa =
             normalizarTexto(
                 document
-                    .getElementById("relNome")
+                    .getElementById(
+                        "relNome"
+                    )
                     .value
             );
 
@@ -3299,11 +3610,6 @@ async function gerarRelatorioServicos() {
                 );
 
 
-            /*
-               Se Nome/QRA foi informado,
-               procura motorista e segurança.
-            */
-
             if (nomePesquisa) {
 
                 const ehMotorista =
@@ -3318,19 +3624,12 @@ async function gerarRelatorioServicos() {
                     );
 
 
-                /*
-                   Se a mesma pessoa estiver
-                   nas duas funções no mesmo registro,
-                   o sistema prioriza motorista,
-                   evitando somar as duas funções
-                   no mesmo registro.
-                */
-
                 if (ehMotorista) {
 
                     registros.push({
 
                         servico,
+
                         nome:
                             servico.qra_motorista,
 
@@ -3345,12 +3644,12 @@ async function gerarRelatorioServicos() {
                     });
 
                 }
-
                 else if (ehSeguranca) {
 
                     registros.push({
 
                         servico,
+
                         nome:
                             servico.qra_seguranca,
 
@@ -3363,21 +3662,15 @@ async function gerarRelatorioServicos() {
                             )
 
                     });
-
                 }
 
             }
-
             else {
-
-                /*
-                   Sem nome informado:
-                   mostra as duas pessoas do registro.
-                */
 
                 registros.push({
 
                     servico,
+
                     nome:
                         servico.qra_motorista,
 
@@ -3395,6 +3688,7 @@ async function gerarRelatorioServicos() {
                 registros.push({
 
                     servico,
+
                     nome:
                         servico.qra_seguranca,
 
@@ -3407,9 +3701,7 @@ async function gerarRelatorioServicos() {
                         )
 
                 });
-
             }
-
         }
 
 
@@ -3437,13 +3729,16 @@ async function gerarRelatorioServicos() {
 
     finally {
 
-        loading.classList.remove("show");
-
+        loading.classList.remove(
+            "show"
+        );
     }
 }
 
 
-function renderizarRelatorioNome(registros) {
+function renderizarRelatorioNome(
+    registros
+) {
 
     const tbody =
         document.getElementById(
@@ -3460,12 +3755,17 @@ function renderizarRelatorioNome(registros) {
     if (!registros.length) {
 
         tbody.innerHTML = `
+
             <tr>
-                <td colspan="6" class="empty">
+                <td
+                    colspan="6"
+                    class="empty"
+                >
                     Nenhum registro encontrado.
                 </td>
             </tr>
         `;
+
 
         resumo.innerHTML = "";
 
@@ -3473,16 +3773,15 @@ function renderizarRelatorioNome(registros) {
     }
 
 
-    let total =
-        0;
-
-
-    registros.forEach(r => {
-
-        total +=
-            Number(r.valor || 0);
-
-    });
+    const total =
+        registros.reduce(
+            (soma, r) =>
+                soma +
+                Number(
+                    r.valor || 0
+                ),
+            0
+        );
 
 
     const quantidade =
@@ -3490,11 +3789,13 @@ function renderizarRelatorioNome(registros) {
 
 
     const nomes =
-        [...new Set(
-            registros.map(
-                r => r.nome
+        [
+            ...new Set(
+                registros.map(
+                    r => r.nome
+                )
             )
-        )];
+        ];
 
 
     resumo.innerHTML = `
@@ -3534,65 +3835,66 @@ function renderizarRelatorioNome(registros) {
                 }
             </strong>
         </div>
-
     `;
 
 
     tbody.innerHTML =
-        registros.map(r => `
+        registros
+            .map(r => `
 
-            <tr>
+                <tr>
 
-                <td>
-                    ${formatarData(
-                        r.servico.data_servico
-                    )}
-                </td>
-
-                <td>
-
-                    <span class="tag ${
-                        r.servico.tipo_servico ===
-                        "Escolta"
-                            ? "tag-escolta"
-                            : "tag-preservacao"
-                    }">
-
-                        ${escapeHtml(
-                            r.servico.tipo_servico
+                    <td>
+                        ${formatarData(
+                            r.servico.data_servico
                         )}
+                    </td>
 
-                    </span>
+                    <td>
 
-                </td>
+                        <span class="tag ${
+                            r.servico.tipo_servico ===
+                            "Escolta"
+                                ? "tag-escolta"
+                                : "tag-preservacao"
+                        }">
 
-                <td>
-                    ${escapeHtml(r.nome)}
-                </td>
+                            ${escapeHtml(
+                                r.servico.tipo_servico
+                            )}
 
-                <td>
-                    ${escapeHtml(r.funcao)}
-                </td>
+                        </span>
 
-                <td class="money">
-                    ${formatarMoeda(r.valor)}
-                </td>
+                    </td>
 
-                <td>
-                    ${formatarData(
-                        r.servico.data_pagamento
-                    )}
-                </td>
+                    <td>
+                        ${escapeHtml(r.nome)}
+                    </td>
 
-            </tr>
+                    <td>
+                        ${escapeHtml(r.funcao)}
+                    </td>
 
-        `).join("");
+                    <td class="money">
+                        ${formatarMoeda(r.valor)}
+                    </td>
+
+                    <td>
+                        ${formatarData(
+                            r.servico.data_pagamento
+                        )}
+                    </td>
+
+                </tr>
+
+            `)
+            .join("");
 }
 
 
-/* ============================================================
+/* =========================================================
    RELATÓRIO FINANCEIRO
-============================================================ */
+========================================================= */
 
 async function gerarRelatorioFinanceiro() {
 
@@ -3658,10 +3960,6 @@ async function gerarRelatorioFinanceiro() {
             `${ano}-${String(mes).padStart(2,"0")}-${String(ultimoDia).padStart(2,"0")}`;
 
 
-        /*
-           Consulta pelo intervalo da DATA DE PAGAMENTO.
-        */
-
         const resultado =
             await supabaseClient
                 .from("servicos")
@@ -3691,10 +3989,6 @@ async function gerarRelatorioFinanceiro() {
             resultado.data || [];
 
 
-        /*
-           Regra adicional do dia de pagamento.
-        */
-
         const servicosFiltrados =
             servicos.filter(
                 servico => {
@@ -3714,23 +4008,17 @@ async function gerarRelatorioFinanceiro() {
                     return (
                         diaPagamento === dia
                     );
-
                 }
             );
 
 
-        const agrupado =
-            {};
+        const agrupado = {};
 
 
         for (
             const servico
             of servicosFiltrados
         ) {
-
-            /*
-               Motorista
-            */
 
             const motorista =
                 String(
@@ -3743,8 +4031,8 @@ async function gerarRelatorioFinanceiro() {
                 const chave =
                     normalizarTexto(
                         motorista
-                    )
-                    + "|motorista";
+                    ) +
+                    "|motorista";
 
 
                 if (!agrupado[chave]) {
@@ -3762,9 +4050,7 @@ async function gerarRelatorioFinanceiro() {
 
                         total:
                             0
-
                     };
-
                 }
 
 
@@ -3778,25 +4064,14 @@ async function gerarRelatorioFinanceiro() {
                         servico.total_motorista
                         || 0
                     );
-
             }
 
-
-            /*
-               Segurança
-            */
 
             const seguranca =
                 String(
                     servico.qra_seguranca || ""
                 ).trim();
 
-
-            /*
-               Se for exatamente a mesma pessoa
-               do motorista, não soma os dois
-               no mesmo serviço.
-            */
 
             const mesmaPessoa =
                 normalizarTexto(
@@ -3815,8 +4090,8 @@ async function gerarRelatorioFinanceiro() {
                 const chave =
                     normalizarTexto(
                         seguranca
-                    )
-                    + "|seguranca";
+                    ) +
+                    "|seguranca";
 
 
                 if (!agrupado[chave]) {
@@ -3834,9 +4109,7 @@ async function gerarRelatorioFinanceiro() {
 
                         total:
                             0
-
                     };
-
                 }
 
 
@@ -3850,9 +4123,7 @@ async function gerarRelatorioFinanceiro() {
                         servico.total_seguranca
                         || 0
                     );
-
             }
-
         }
 
 
@@ -3894,12 +4165,13 @@ async function gerarRelatorioFinanceiro() {
         loading.classList.remove(
             "show"
         );
-
     }
 }
 
 
-function renderizarFinanceiro(linhas) {
+function renderizarFinanceiro(
+    linhas
+) {
 
     const tbody =
         document.getElementById(
@@ -3916,8 +4188,12 @@ function renderizarFinanceiro(linhas) {
     if (!linhas.length) {
 
         tbody.innerHTML = `
+
             <tr>
-                <td colspan="4" class="empty">
+                <td
+                    colspan="4"
+                    class="empty"
+                >
                     Nenhum pagamento encontrado
                     para os filtros selecionados.
                 </td>
@@ -3934,62 +4210,63 @@ function renderizarFinanceiro(linhas) {
             <span>
                 ${formatarMoeda(0)}
             </span>
-
         `;
+
 
         return;
     }
 
 
-    let totalGeral =
-        0;
-
-
-    linhas.forEach(
-        linha => {
-            totalGeral +=
+    const totalGeral =
+        linhas.reduce(
+            (total, linha) =>
+                total +
                 Number(
                     linha.total || 0
-                );
-        }
-    );
+                ),
+            0
+        );
 
 
     tbody.innerHTML =
-        linhas.map(linha => `
+        linhas
+            .map(
+                linha => `
 
-            <tr>
+                <tr>
 
-                <td>
-                    ${escapeHtml(
-                        linha.nome
-                    )}
-                </td>
+                    <td>
+                        ${escapeHtml(
+                            linha.nome
+                        )}
+                    </td>
 
-                <td>
-                    ${escapeHtml(
-                        linha.funcao
-                    )}
-                </td>
+                    <td>
+                        ${escapeHtml(
+                            linha.funcao
+                        )}
+                    </td>
 
-                <td>
-                    ${linha.quantidade}
-                    ${
-                        linha.quantidade === 1
-                            ? "serviço"
-                            : "serviços"
-                    }
-                </td>
+                    <td>
+                        ${linha.quantidade}
+                        ${
+                            linha.quantidade === 1
+                                ? "serviço"
+                                : "serviços"
+                        }
+                    </td>
 
-                <td class="money">
-                    ${formatarMoeda(
-                        linha.total
-                    )}
-                </td>
+                    <td class="money">
+                        ${formatarMoeda(
+                            linha.total
+                        )}
+                    </td>
 
-            </tr>
+                </tr>
 
-        `).join("");
+            `
+            )
+            .join("");
 
 
     totalElemento.innerHTML = `
@@ -4001,14 +4278,13 @@ function renderizarFinanceiro(linhas) {
         <span>
             ${formatarMoeda(totalGeral)}
         </span>
-
     `;
 }
 
 
-/* ============================================================
+/* =========================================================
    EVENTOS
-============================================================ */
+========================================================= */
 
 document
     .getElementById("loginForm")
@@ -4027,9 +4303,8 @@ document
 
 
 /*
-   Permite somente números inteiros nos KM.
+   KM somente números inteiros.
 */
-
 document
     .querySelectorAll(
         'input[type="number"][id*="km"]'
@@ -4041,21 +4316,18 @@ document
             function() {
 
                 this.value =
-                    this.value
-                        .replace(
-                            /[^0-9]/g,
-                            ""
-                        );
-
+                    this.value.replace(
+                        /[^0-9]/g,
+                        ""
+                    );
             }
         );
-
     });
 
 
-/* ============================================================
+/* =========================================================
    INICIALIZAÇÃO
-============================================================ */
+========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -4063,11 +4335,26 @@ document.addEventListener(
 
         prepararAnosFinanceiro();
 
-        verificarSessao();
+        /*
+           Começa explicitamente
+           na tela de login.
+        */
+        document
+            .getElementById("system")
+            .classList
+            .add("hidden");
 
+
+        showPage("page-login");
+
+
+        /*
+           Depois verifica se já existe
+           uma sessão salva no Supabase.
+        */
+        verificarSessao();
     }
 );
-
 </script>
 
 </body>
