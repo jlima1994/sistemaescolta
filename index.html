@@ -2,10 +2,13 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0f172a">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0,
+               viewport-fit=cover">
+
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f172a">
 
 <title>Controle de Serviços</title>
 
@@ -18,17 +21,18 @@
 }
 
 html {
+    width: 100%;
     min-height: 100%;
-    background: #f1f5f9;
+    -webkit-text-size-adjust: 100%;
 }
 
 body {
     margin: 0;
-    min-height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
     font-family: Arial, Helvetica, sans-serif;
     background: #f1f5f9;
     color: #172033;
-    -webkit-text-size-adjust: 100%;
 }
 
 button,
@@ -48,58 +52,72 @@ select {
     appearance: none;
 }
 
-/* =========================================================
-   NAVEGAÇÃO
-========================================================= */
-
 .app {
     min-height: 100vh;
     min-height: 100dvh;
 }
 
-/*
-   CORREÇÃO PRINCIPAL:
+/* =========================================================
+   NAVEGAÇÃO / PÁGINAS
+========================================================= */
 
-   Todas as páginas ficam escondidas.
-   Somente .active aparece.
-
-   Isso impede que a tela de login continue
-   aparecendo depois do login.
-*/
 .page {
-    display: none !important;
+    display: none;
 }
 
 .page.active {
-    display: block !important;
+    display: block;
 }
 
 /*
-   A tela de login precisa ser flex apenas quando ativa.
+   CORREÇÃO PRINCIPAL DO LOGIN:
+   Quando o active é removido, a tela de login
+   precisa continuar escondida.
 */
 .login-page {
     min-height: 100vh;
     min-height: 100dvh;
+    display: flex;
     align-items: center;
     justify-content: center;
-    padding:
-        max(20px, env(safe-area-inset-top))
-        max(20px, env(safe-area-inset-right))
-        max(20px, env(safe-area-inset-bottom))
-        max(20px, env(safe-area-inset-left));
+    padding: 20px;
     background: linear-gradient(135deg, #0f172a, #1e3a8a);
 }
 
-.login-page.active {
-    display: flex !important;
-}
-
-.hidden {
+.login-page:not(.active) {
     display: none !important;
 }
 
 /* =========================================================
-   TOPBAR
+   LOGIN
+========================================================= */
+
+.login-box {
+    width: 100%;
+    max-width: 420px;
+    background: white;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+
+.login-logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-logo h1 {
+    margin: 0 0 8px;
+    color: #0f172a;
+}
+
+.login-logo p {
+    margin: 0;
+    color: #64748b;
+}
+
+/* =========================================================
+   TOPO
 ========================================================= */
 
 .topbar {
@@ -107,14 +125,16 @@ select {
     color: white;
     min-height: 64px;
     padding:
+        max(12px, env(safe-area-inset-top))
+        22px
         12px
-        max(22px, env(safe-area-inset-right))
-        12px
-        max(22px, env(safe-area-inset-left));
+        22px;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 15px;
+
     box-shadow: 0 2px 8px rgba(0,0,0,.15);
 }
 
@@ -148,34 +168,6 @@ select {
 }
 
 /* =========================================================
-   LOGIN
-========================================================= */
-
-.login-box {
-    width: 100%;
-    max-width: 420px;
-    background: white;
-    padding: 35px;
-    border-radius: 18px;
-    box-shadow: 0 20px 60px rgba(0,0,0,.25);
-}
-
-.login-logo {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.login-logo h1 {
-    margin: 0 0 8px;
-    color: #0f172a;
-}
-
-.login-logo p {
-    margin: 0;
-    color: #64748b;
-}
-
-/* =========================================================
    CARDS
 ========================================================= */
 
@@ -192,10 +184,6 @@ select {
     margin-top: 0;
 }
 
-/* =========================================================
-   TÍTULOS
-========================================================= */
-
 .page-title {
     margin-bottom: 20px;
 }
@@ -211,7 +199,7 @@ select {
 }
 
 /* =========================================================
-   GRID
+   GRIDS
 ========================================================= */
 
 .grid {
@@ -257,7 +245,19 @@ select {
     background: white;
     color: #0f172a;
     outline: none;
-    font-size: 16px;
+}
+
+select {
+    cursor: pointer;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #64748b 50%),
+        linear-gradient(135deg, #64748b 50%, transparent 50%);
+    background-position:
+        calc(100% - 18px) 18px,
+        calc(100% - 13px) 18px;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 35px;
 }
 
 input:focus,
@@ -282,7 +282,6 @@ input[readonly] {
     font-weight: 700;
     transition: .15s;
     min-height: 44px;
-    touch-action: manipulation;
 }
 
 .btn:hover {
@@ -290,7 +289,7 @@ input[readonly] {
 }
 
 .btn:disabled {
-    opacity: .65;
+    opacity: .6;
     cursor: not-allowed;
     transform: none;
 }
@@ -347,7 +346,6 @@ input[readonly] {
     cursor: pointer;
     text-align: left;
     transition: .2s;
-    color: #172033;
 }
 
 .menu-option:hover {
@@ -371,7 +369,7 @@ input[readonly] {
 }
 
 /* =========================================================
-   SERVIÇOS
+   TIPO SERVIÇO
 ========================================================= */
 
 .service-options {
@@ -388,8 +386,6 @@ input[readonly] {
     background: white;
     cursor: pointer;
     transition: .2s;
-    color: #172033;
-    text-align: left;
 }
 
 .service-option:hover {
@@ -460,6 +456,48 @@ td select {
 }
 
 /* =========================================================
+   CHECKBOX DOS RELATÓRIOS
+========================================================= */
+
+.checkbox-selecao {
+    width: 20px;
+    height: 20px;
+    min-height: 20px;
+    cursor: pointer;
+    accent-color: #2563eb;
+    padding: 0;
+}
+
+.selecionar-todos {
+    width: 20px;
+    height: 20px;
+    min-height: 20px;
+    cursor: pointer;
+    accent-color: #2563eb;
+    padding: 0;
+}
+
+.linha-selecionada {
+    background: #eff6ff !important;
+}
+
+.exclusao-acoes {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e2e8f0;
+}
+
+#contadorSelecionados {
+    color: #475569;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* =========================================================
    PEDÁGIOS
 ========================================================= */
 
@@ -497,10 +535,6 @@ td select {
 .resenha strong {
     color: #0f172a;
 }
-
-/* =========================================================
-   AÇÕES
-========================================================= */
 
 .actions {
     display: flex;
@@ -543,7 +577,7 @@ td select {
 }
 
 /* =========================================================
-   LOADING
+   OUTROS
 ========================================================= */
 
 .loading {
@@ -556,10 +590,6 @@ td select {
 .loading.show {
     display: block;
 }
-
-/* =========================================================
-   RESUMOS
-========================================================= */
 
 .resumo-cards {
     display: grid;
@@ -613,6 +643,10 @@ td select {
     color: #166534;
 }
 
+.hidden {
+    display: none !important;
+}
+
 .footer-note {
     text-align: center;
     color: #64748b;
@@ -621,11 +655,10 @@ td select {
 }
 
 /* =========================================================
-   TABLET
+   RESPONSIVO
 ========================================================= */
 
 @media (max-width: 900px) {
-
     .grid-4,
     .resumo-cards {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -635,10 +668,6 @@ td select {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
-
-/* =========================================================
-   CELULAR
-========================================================= */
 
 @media (max-width: 700px) {
 
@@ -658,44 +687,39 @@ td select {
     .topbar {
         align-items: stretch;
         flex-direction: column;
-        padding: 14px 15px;
+        padding-left: 15px;
+        padding-right: 15px;
     }
 
     .topbar-user {
+        width: 100%;
         justify-content: space-between;
     }
 
     .topbar-user .btn {
-        flex-shrink: 0;
+        flex: 0 0 auto;
     }
 
     .login-box {
         padding: 25px 20px;
-        border-radius: 14px;
     }
 
-    .login-logo h1 {
-        font-size: 25px;
+    .card {
+        padding: 18px;
+        border-radius: 12px;
     }
 
     .page-title h1 {
         font-size: 24px;
     }
 
-    .card {
-        padding: 17px;
-        border-radius: 12px;
+    .section-title {
+        align-items: flex-start;
+        flex-direction: column;
     }
 
-    .menu-option,
-    .service-option {
-        min-height: 145px;
-        padding: 20px;
-    }
-
-    .menu-icon {
-        font-size: 34px;
-        margin-bottom: 10px;
+    .section-title .btn {
+        width: 100%;
     }
 
     .actions {
@@ -706,72 +730,50 @@ td select {
         width: 100%;
     }
 
-    .section-title {
+    .exclusao-acoes {
         align-items: stretch;
         flex-direction: column;
     }
 
-    .section-title .btn {
+    .exclusao-acoes .btn {
         width: 100%;
     }
-
-    .total-box {
-        flex-direction: column;
-    }
-
-    /*
-       Evita que inputs de tabela fiquem apertados
-       em celulares.
-    */
-    table {
-        min-width: 680px;
-    }
-}
-
-/* =========================================================
-   CELULARES MUITO PEQUENOS
-========================================================= */
-
-@media (max-width: 380px) {
-
-    .container {
-        padding: 10px;
-    }
-
-    .card {
-        padding: 14px;
-    }
-
-    .login-box {
-        padding: 22px 16px;
-    }
-
-    .topbar-title {
-        font-size: 17px;
-    }
-
-    .user-badge {
-        max-width: 180px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-}
-
-/* =========================================================
-   SAFARI / IPHONE
-========================================================= */
-
-@supports (-webkit-touch-callout: none) {
 
     input,
     select,
     button {
         font-size: 16px;
     }
+}
+
+@media (max-width: 480px) {
+
+    .container {
+        padding: 10px;
+    }
 
     .login-page {
-        min-height: -webkit-fill-available;
+        padding: 12px;
+    }
+
+    .login-box {
+        padding: 22px 16px;
+        border-radius: 14px;
+    }
+
+    .menu-option,
+    .service-option {
+        padding: 20px;
+        min-height: 150px;
+    }
+
+    .menu-icon {
+        font-size: 34px;
+    }
+
+    th,
+    td {
+        padding: 9px;
     }
 }
 </style>
@@ -804,10 +806,7 @@ td select {
                     type="text"
                     id="loginUsuario"
                     autocomplete="username"
-                    autocapitalize="none"
-                    spellcheck="false"
-                    required
-                >
+                    required>
             </div>
 
             <div class="field" style="margin-bottom:20px;">
@@ -816,15 +815,13 @@ td select {
                     type="password"
                     id="loginSenha"
                     autocomplete="current-password"
-                    required
-                >
+                    required>
             </div>
 
             <button
                 type="submit"
                 class="btn btn-primary btn-block"
-                id="btnLogin"
-            >
+                id="btnLogin">
                 Entrar
             </button>
 
@@ -854,10 +851,8 @@ td select {
         </span>
 
         <button
-            type="button"
             class="btn btn-danger"
-            onclick="logout()"
-        >
+            onclick="logout()">
             Sair
         </button>
 
@@ -882,10 +877,9 @@ td select {
     <div class="menu-grid">
 
         <button
-            type="button"
             class="menu-option"
-            onclick="showPage('page-service-type')"
-        >
+            onclick="showPage('page-service-type')">
+
             <div class="menu-icon">📋</div>
 
             <h2>Criar Registro</h2>
@@ -894,13 +888,13 @@ td select {
                 Registrar um novo serviço de Escolta
                 ou Preservação.
             </p>
+
         </button>
 
         <button
-            type="button"
             class="menu-option"
-            onclick="abrirRelatorios()"
-        >
+            onclick="abrirRelatorios()">
+
             <div class="menu-icon">📊</div>
 
             <h2>Gerar Relatório</h2>
@@ -908,6 +902,7 @@ td select {
             <p>
                 Consultar serviços e valores a receber.
             </p>
+
         </button>
 
     </div>
@@ -916,7 +911,7 @@ td select {
 
 
 <!-- =========================================================
-     TIPO DE SERVIÇO
+     TIPO SERVIÇO
 ========================================================= -->
 
 <section id="page-service-type" class="page">
@@ -929,10 +924,9 @@ td select {
     <div class="service-options">
 
         <button
-            type="button"
             class="service-option"
-            onclick="abrirFormulario('Escolta')"
-        >
+            onclick="abrirFormulario('Escolta')">
+
             <div class="menu-icon">🚚</div>
 
             <h2>Escolta</h2>
@@ -940,13 +934,13 @@ td select {
             <p>
                 Registrar serviço de escolta.
             </p>
+
         </button>
 
         <button
-            type="button"
             class="service-option"
-            onclick="abrirFormulario('Preservação')"
-        >
+            onclick="abrirFormulario('Preservação')">
+
             <div class="menu-icon">🛡️</div>
 
             <h2>Preservação</h2>
@@ -954,20 +948,17 @@ td select {
             <p>
                 Registrar serviço de preservação.
             </p>
+
         </button>
 
     </div>
 
     <div class="actions">
-
         <button
-            type="button"
             class="btn btn-light"
-            onclick="showPage('page-menu')"
-        >
+            onclick="showPage('page-menu')">
             ← Voltar
         </button>
-
     </div>
 
 </section>
@@ -995,7 +986,11 @@ td select {
 
     <form id="serviceForm">
 
-        <input type="hidden" id="tipoServico">
+        <input
+            type="hidden"
+            id="tipoServico">
+
+        <!-- DADOS -->
 
         <div class="card">
 
@@ -1007,32 +1002,26 @@ td select {
 
                 <div class="field">
                     <label for="dataServico">Data</label>
-
                     <input
                         type="date"
                         id="dataServico"
-                        required
-                    >
+                        required>
                 </div>
 
                 <div class="field">
                     <label for="localOrigem">Origem</label>
-
                     <input
                         type="text"
                         id="localOrigem"
-                        placeholder="Local de origem"
-                    >
+                        placeholder="Local de origem">
                 </div>
 
                 <div class="field">
                     <label for="localDestino">Destino</label>
-
                     <input
                         type="text"
                         id="localDestino"
-                        placeholder="Local de destino"
-                    >
+                        placeholder="Local de destino">
                 </div>
 
             </div>
@@ -1040,40 +1029,78 @@ td select {
             <div
                 id="preservacaoIdentificacao"
                 class="hidden"
-                style="margin-bottom:20px;"
-            >
+                style="margin-bottom:20px;">
+
                 <div class="alert alert-info show">
                     <strong>Preservação CD</strong>
                 </div>
+
             </div>
 
             <div
                 class="grid grid-2"
-                style="margin-top:16px;"
-            >
+                style="margin-top:16px;">
 
+                <!-- MOTORISTA -->
                 <div class="field">
+
                     <label for="qraMotorista">
                         Motorista
                     </label>
 
-                    <input
-                        type="text"
+                    <select
                         id="qraMotorista"
-                        required
-                    >
+                        required>
+
+                        <option value="">
+                            Selecione o motorista
+                        </option>
+
+                        <option value="Anderson">
+                            Anderson
+                        </option>
+
+                        <option value="André Kaique">
+                            André Kaique
+                        </option>
+
+                    </select>
+
                 </div>
 
+                <!-- SEGURANÇA -->
                 <div class="field">
+
                     <label for="qraSeguranca">
                         Segurança
                     </label>
 
-                    <input
-                        type="text"
+                    <select
                         id="qraSeguranca"
-                        required
-                    >
+                        required>
+
+                        <option value="">
+                            Selecione o segurança
+                        </option>
+
+                        <option value="J.Lima">
+                            J.Lima
+                        </option>
+
+                        <option value="Pacini">
+                            Pacini
+                        </option>
+
+                        <option value="Paulo">
+                            Paulo
+                        </option>
+
+                        <option value="Ramos">
+                            Ramos
+                        </option>
+
+                    </select>
+
                 </div>
 
             </div>
@@ -1104,14 +1131,16 @@ td select {
                     <tbody>
 
                     <tr>
-                        <td>Inicial Deslocamento</td>
+
+                        <td>
+                            Inicial Deslocamento
+                        </td>
 
                         <td>
                             <input
                                 type="time"
                                 id="hrInicialDeslocamento"
-                                required
-                            >
+                                required>
                         </td>
 
                         <td>
@@ -1121,12 +1150,13 @@ td select {
                                 min="0"
                                 step="1"
                                 inputmode="numeric"
-                                required
-                            >
+                                required>
                         </td>
+
                     </tr>
 
                     <tr>
+
                         <td id="labelInicialServico">
                             Inicial Escolta
                         </td>
@@ -1135,8 +1165,7 @@ td select {
                             <input
                                 type="time"
                                 id="hrInicialServico"
-                                required
-                            >
+                                required>
                         </td>
 
                         <td>
@@ -1146,12 +1175,13 @@ td select {
                                 min="0"
                                 step="1"
                                 inputmode="numeric"
-                                required
-                            >
+                                required>
                         </td>
+
                     </tr>
 
                     <tr>
+
                         <td id="labelFinalServico">
                             Final Escolta
                         </td>
@@ -1160,8 +1190,7 @@ td select {
                             <input
                                 type="time"
                                 id="hrFinalServico"
-                                required
-                            >
+                                required>
                         </td>
 
                         <td>
@@ -1171,20 +1200,22 @@ td select {
                                 min="0"
                                 step="1"
                                 inputmode="numeric"
-                                required
-                            >
+                                required>
                         </td>
+
                     </tr>
 
                     <tr>
-                        <td>Final Deslocamento</td>
+
+                        <td>
+                            Final Deslocamento
+                        </td>
 
                         <td>
                             <input
                                 type="time"
                                 id="hrFinalDeslocamento"
-                                required
-                            >
+                                required>
                         </td>
 
                         <td>
@@ -1194,9 +1225,9 @@ td select {
                                 min="0"
                                 step="1"
                                 inputmode="numeric"
-                                required
-                            >
+                                required>
                         </td>
+
                     </tr>
 
                     </tbody>
@@ -1220,8 +1251,7 @@ td select {
                     type="button"
                     class="btn btn-secondary"
                     onclick="togglePedagios()"
-                    id="btnPedagios"
-                >
+                    id="btnPedagios">
                     Incluir Pedágios
                 </button>
 
@@ -1229,8 +1259,7 @@ td select {
 
             <div
                 id="pedagioSection"
-                class="pedagio-section"
-            >
+                class="pedagio-section">
 
                 <div class="table-wrap">
 
@@ -1253,19 +1282,24 @@ td select {
 
                 <div
                     class="total-box"
-                    style="margin-top:15px;"
-                >
-                    <span>Total dos Pedágios</span>
+                    style="margin-top:15px;">
+
+                    <span>
+                        Total dos Pedágios
+                    </span>
 
                     <span id="totalPedagios">
                         R$ 0,00
                     </span>
+
                 </div>
 
             </div>
 
         </div>
 
+
+        <!-- BOTÕES -->
 
         <div class="card">
 
@@ -1274,16 +1308,14 @@ td select {
                 <button
                     type="submit"
                     class="btn btn-success"
-                    id="btnRegistrar"
-                >
+                    id="btnRegistrar">
                     Registrar
                 </button>
 
                 <button
                     type="button"
                     class="btn btn-light"
-                    onclick="showPage('page-service-type')"
-                >
+                    onclick="showPage('page-service-type')">
                     Cancelar
                 </button>
 
@@ -1291,8 +1323,7 @@ td select {
 
             <div
                 id="saveLoading"
-                class="loading"
-            >
+                class="loading">
                 Salvando serviço no banco de dados...
             </div>
 
@@ -1316,23 +1347,22 @@ td select {
 
     <div class="card">
 
-        <div id="resenhaConteudo" class="resenha"></div>
+        <div
+            id="resenhaConteudo"
+            class="resenha">
+        </div>
 
         <div class="actions">
 
             <button
-                type="button"
                 class="btn btn-primary"
-                onclick="novoRegistro()"
-            >
+                onclick="novoRegistro()">
                 Novo Registro
             </button>
 
             <button
-                type="button"
                 class="btn btn-light"
-                onclick="showPage('page-menu')"
-            >
+                onclick="showPage('page-menu')">
                 Menu Principal
             </button>
 
@@ -1360,6 +1390,8 @@ td select {
     </div>
 
 
+    <!-- FILTROS -->
+
     <div class="card">
 
         <div class="section-title">
@@ -1375,8 +1407,7 @@ td select {
 
                 <input
                     type="date"
-                    id="relDataInicial"
-                >
+                    id="relDataInicial">
             </div>
 
             <div class="field">
@@ -1386,19 +1417,19 @@ td select {
 
                 <input
                     type="date"
-                    id="relDataFinal"
-                >
+                    id="relDataFinal">
             </div>
 
             <div class="field">
-
                 <label for="relTipo">
                     Tipo de Serviço
                 </label>
 
                 <select id="relTipo">
 
-                    <option value="">Todos</option>
+                    <option value="">
+                        Todos
+                    </option>
 
                     <option value="Escolta">
                         Escolta
@@ -1421,8 +1452,7 @@ td select {
                 <input
                     type="text"
                     id="relNome"
-                    placeholder="Motorista ou segurança"
-                >
+                    placeholder="Motorista ou segurança">
 
             </div>
 
@@ -1432,67 +1462,111 @@ td select {
         <div class="actions">
 
             <button
-                type="button"
                 class="btn btn-primary"
-                onclick="gerarRelatorioServicos()"
-            >
+                onclick="gerarRelatorioServicos()">
                 Pesquisar
             </button>
 
             <button
-                type="button"
                 class="btn btn-light"
-                onclick="limparFiltrosRelatorio()"
-            >
+                onclick="limparFiltrosRelatorio()">
                 Limpar
             </button>
 
         </div>
 
+
         <div
             id="relLoading"
-            class="loading"
-        >
+            class="loading">
             Consultando banco de dados...
         </div>
+
 
         <div
             id="relAlert"
             class="alert"
-            style="margin-top:15px;"
-        ></div>
+            style="margin-top:15px;">
+        </div>
 
     </div>
 
 
+    <!-- RESULTADO -->
+
     <div class="card">
 
         <div class="section-title">
-            <h2>Relatório por Nome</h2>
+
+            <h2>
+                Relatório por Nome
+            </h2>
+
         </div>
+
 
         <div
             id="relatorioNomeResumo"
             class="resumo-cards"
-            style="margin-bottom:20px;"
-        ></div>
+            style="margin-bottom:20px;">
+        </div>
+
+
+        <!-- AÇÕES DE EXCLUSÃO -->
+
+        <div
+            id="exclusaoAcoes"
+            class="exclusao-acoes">
+
+            <button
+                type="button"
+                class="btn btn-danger"
+                onclick="excluirSelecionados()"
+                id="btnExcluirSelecionados"
+                disabled>
+
+                🗑️ Excluir selecionados
+
+            </button>
+
+            <span id="contadorSelecionados">
+                0 registros selecionados
+            </span>
+
+        </div>
+
 
         <div class="table-wrap">
 
             <table>
 
                 <thead>
+
                 <tr>
+
+                    <th style="width:45px;">
+                        <input
+                            type="checkbox"
+                            class="selecionar-todos"
+                            id="selecionarTodos"
+                            onchange="selecionarTodosRegistros(this.checked)"
+                            title="Selecionar todos">
+                    </th>
+
                     <th>Data</th>
                     <th>Serviço</th>
                     <th>Nome</th>
                     <th>Função</th>
                     <th>Valor</th>
                     <th>Pagamento</th>
+
                 </tr>
+
                 </thead>
 
-                <tbody id="relatorioNomeBody"></tbody>
+                <tbody
+                    id="relatorioNomeBody">
+                </tbody>
 
             </table>
 
@@ -1501,17 +1575,19 @@ td select {
     </div>
 
 
+    <!-- FINANCEIRO -->
+
     <div class="card">
 
         <div class="section-title">
 
-            <h2>Relatório Financeiro</h2>
+            <h2>
+                Relatório Financeiro
+            </h2>
 
             <button
-                type="button"
                 class="btn btn-primary"
-                onclick="gerarRelatorioFinanceiro()"
-            >
+                onclick="gerarRelatorioFinanceiro()">
                 Relatório Financeiro
             </button>
 
@@ -1582,8 +1658,7 @@ td select {
 
         <div
             id="financeiroLoading"
-            class="loading"
-        >
+            class="loading">
             Gerando relatório financeiro...
         </div>
 
@@ -1591,14 +1666,13 @@ td select {
         <div
             id="financeiroAlert"
             class="alert"
-            style="margin-top:15px;"
-        ></div>
+            style="margin-top:15px;">
+        </div>
 
 
         <div
             id="financeiroResultado"
-            style="margin-top:20px;"
-        >
+            style="margin-top:20px;">
 
             <div class="table-wrap">
 
@@ -1625,8 +1699,7 @@ td select {
             <div
                 id="financeiroTotal"
                 class="total-box"
-                style="margin-top:20px;"
-            >
+                style="margin-top:20px;">
 
                 <span>
                     Total Geral a Pagar
@@ -1646,10 +1719,8 @@ td select {
     <div class="actions">
 
         <button
-            type="button"
             class="btn btn-light"
-            onclick="showPage('page-menu')"
-        >
+            onclick="showPage('page-menu')">
             ← Menu Principal
         </button>
 
@@ -1669,6 +1740,7 @@ td select {
 
 
 <script>
+
 /* =========================================================
    SUPABASE
 ========================================================= */
@@ -1710,10 +1782,7 @@ let servicosRelatorioAtual = [];
 
 function escapeHtml(valor) {
 
-    if (
-        valor === null ||
-        valor === undefined
-    ) {
+    if (valor === null || valor === undefined) {
         return "";
     }
 
@@ -1728,11 +1797,13 @@ function escapeHtml(valor) {
 
 function formatarMoeda(valor) {
 
-    return Number(valor || 0)
-        .toLocaleString("pt-BR", {
+    return Number(valor || 0).toLocaleString(
+        "pt-BR",
+        {
             style: "currency",
             currency: "BRL"
-        });
+        }
+    );
 }
 
 
@@ -1740,8 +1811,7 @@ function formatarData(data) {
 
     if (!data) return "";
 
-    const partes =
-        String(data).split("-");
+    const partes = String(data).split("-");
 
     if (partes.length !== 3) {
         return data;
@@ -1755,15 +1825,11 @@ function dataHojeISO() {
 
     const agora = new Date();
 
-    return [
-        agora.getFullYear(),
-        String(
-            agora.getMonth() + 1
-        ).padStart(2, "0"),
-        String(
-            agora.getDate()
-        ).padStart(2, "0")
-    ].join("-");
+    return `${agora.getFullYear()}-${
+        String(agora.getMonth() + 1).padStart(2,"0")
+    }-${
+        String(agora.getDate()).padStart(2,"0")
+    }`;
 }
 
 
@@ -1777,11 +1843,7 @@ function normalizarTexto(texto) {
 }
 
 
-function mostrarAlerta(
-    id,
-    mensagem,
-    tipo = "error"
-) {
+function mostrarAlerta(id, mensagem, tipo="error") {
 
     const elemento =
         document.getElementById(id);
@@ -1813,77 +1875,23 @@ function esconderAlerta(id) {
 
 function showPage(id) {
 
-    /*
-       Esconde TODAS as páginas antes
-       de mostrar a desejada.
-    */
     document
         .querySelectorAll(".page")
         .forEach(page => {
             page.classList.remove("active");
         });
 
-
     const pagina =
         document.getElementById(id);
 
-
-    if (!pagina) {
-        console.error(
-            "Página não encontrada:",
-            id
-        );
-        return;
+    if (pagina) {
+        pagina.classList.add("active");
     }
-
-
-    pagina.classList.add("active");
-
 
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
-}
-
-
-/*
-   Função central para entrar no sistema.
-   Ela garante que a tela de login seja
-   realmente escondida.
-*/
-function entrarNoSistema(usuario) {
-
-    document
-        .getElementById("loggedUser")
-        .textContent = usuario;
-
-
-    document
-        .getElementById("page-login")
-        .classList
-        .remove("active");
-
-
-    document
-        .getElementById("system")
-        .classList
-        .remove("hidden");
-
-
-    /*
-       Pequeno reforço:
-       garante display correto mesmo
-       em Safari/Chrome mobile.
-    */
-    document
-        .querySelectorAll("#system .page")
-        .forEach(page => {
-            page.classList.remove("active");
-        });
-
-
-    showPage("page-menu");
 }
 
 
@@ -1908,20 +1916,15 @@ async function login(event) {
 
     esconderAlerta("loginAlert");
 
-
     const usuario =
-        document
-            .getElementById("loginUsuario")
+        document.getElementById("loginUsuario")
             .value
             .trim()
             .toLowerCase();
 
-
     const senha =
-        document
-            .getElementById("loginSenha")
+        document.getElementById("loginSenha")
             .value;
-
 
     if (!usuario || !senha) {
 
@@ -1933,42 +1936,30 @@ async function login(event) {
         return;
     }
 
-
     const btn =
         document.getElementById("btnLogin");
 
-
     btn.disabled = true;
     btn.textContent = "Entrando...";
-
 
     try {
 
         const email =
             usuarioParaEmail(usuario);
 
-
-        const resultado =
+        const { data, error } =
             await supabaseClient.auth
                 .signInWithPassword({
                     email,
                     password: senha
                 });
 
-
-        if (resultado.error) {
-            throw resultado.error;
+        if (error) {
+            throw error;
         }
 
+        usuarioAtual = data.user;
 
-        usuarioAtual =
-            resultado.data.user;
-
-
-        /*
-           Busca dados complementares
-           do usuário.
-        */
         const resultadoUsuario =
             await supabaseClient
                 .from("usuarios")
@@ -1976,33 +1967,44 @@ async function login(event) {
                 .eq("usuario", usuario)
                 .maybeSingle();
 
-
         if (!resultadoUsuario.error) {
-
             usuarioBanco =
                 resultadoUsuario.data;
-
         }
 
+        document
+            .getElementById("loggedUser")
+            .textContent = usuario;
 
         /*
-           AQUI acontece a troca da tela.
+           PRIMEIRO esconde completamente
+           a tela de login.
         */
-        entrarNoSistema(usuario);
 
+        document
+            .getElementById("page-login")
+            .classList
+            .remove("active");
+
+        document
+            .getElementById("system")
+            .classList
+            .remove("hidden");
+
+        /*
+           Depois abre o menu.
+        */
+
+        showPage("page-menu");
 
         document
             .getElementById("loginForm")
             .reset();
 
     }
-
     catch (error) {
 
-        console.error(
-            "Erro no login:",
-            error
-        );
+        console.error(error);
 
         mostrarAlerta(
             "loginAlert",
@@ -2010,11 +2012,11 @@ async function login(event) {
         );
 
     }
-
     finally {
 
         btn.disabled = false;
         btn.textContent = "Entrar";
+
     }
 }
 
@@ -2028,35 +2030,30 @@ async function logout() {
     try {
         await supabaseClient.auth.signOut();
     }
-    catch (error) {
+    catch(error) {
         console.error(error);
     }
 
-
     usuarioAtual = null;
     usuarioBanco = null;
-
 
     document
         .getElementById("system")
         .classList
         .add("hidden");
 
+    document
+        .querySelectorAll(".page")
+        .forEach(page => {
+            page.classList.remove("active");
+        });
 
     document
         .getElementById("page-login")
         .classList
         .add("active");
 
-
     esconderAlerta("loginAlert");
-
-
-    /*
-       Como page-login é a única página
-       ativa, ela volta corretamente.
-    */
-    showPage("page-login");
 }
 
 
@@ -2068,84 +2065,68 @@ async function verificarSessao() {
 
     try {
 
-        const resultado =
+        const { data } =
             await supabaseClient.auth
                 .getSession();
 
+        if (
+            data &&
+            data.session &&
+            data.session.user
+        ) {
 
-        const session =
-            resultado.data?.session;
+            usuarioAtual =
+                data.session.user;
 
+            const email =
+                usuarioAtual.email || "";
 
-        if (!session) {
+            const usuario =
+                email.split("@")[0];
+
+            document
+                .getElementById("loggedUser")
+                .textContent = usuario;
+
+            document
+                .getElementById("page-login")
+                .classList
+                .remove("active");
+
+            document
+                .getElementById("system")
+                .classList
+                .remove("hidden");
+
+            showPage("page-menu");
+
+        }
+        else {
 
             document
                 .getElementById("system")
                 .classList
                 .add("hidden");
 
-            showPage("page-login");
-
-            return;
-        }
-
-
-        usuarioAtual =
-            session.user;
-
-
-        const email =
-            usuarioAtual.email || "";
-
-
-        const usuario =
-            email
-                .split("@")[0];
-
-
-        /*
-           Busca usuário na tabela.
-        */
-        const resultadoUsuario =
-            await supabaseClient
-                .from("usuarios")
-                .select("*")
-                .eq("usuario", usuario)
-                .maybeSingle();
-
-
-        if (!resultadoUsuario.error) {
-
-            usuarioBanco =
-                resultadoUsuario.data;
+            document
+                .getElementById("page-login")
+                .classList
+                .add("active");
 
         }
-
-
-        entrarNoSistema(usuario);
 
     }
-
-    catch (error) {
+    catch(error) {
 
         console.error(
             "Erro ao verificar sessão:",
             error
         );
 
-        document
-            .getElementById("system")
-            .classList
-            .add("hidden");
-
-        showPage("page-login");
     }
 }
 
 
-/*
-   Monitoramento da autenticação.
-*/
 supabaseClient.auth.onAuthStateChange(
     (event, session) => {
 
@@ -2160,12 +2141,17 @@ supabaseClient.auth.onAuthStateChange(
                 .add("hidden");
 
             document
+                .querySelectorAll(".page")
+                .forEach(page => {
+                    page.classList.remove("active");
+                });
+
+            document
                 .getElementById("page-login")
                 .classList
                 .add("active");
-
-            showPage("page-login");
         }
+
     }
 );
 
@@ -2178,11 +2164,9 @@ function abrirFormulario(tipo) {
 
     tipoServicoAtual = tipo;
 
-
     document
         .getElementById("tipoServico")
         .value = tipo;
-
 
     const titulo =
         document.getElementById("formTitle");
@@ -2207,7 +2191,6 @@ function abrirFormulario(tipo) {
         document.getElementById(
             "labelFinalServico"
         );
-
 
     if (tipo === "Escolta") {
 
@@ -2251,7 +2234,6 @@ function abrirFormulario(tipo) {
             "Final Preservação";
     }
 
-
     limparFormulario();
 
     showPage("page-service-form");
@@ -2264,38 +2246,29 @@ function limparFormulario() {
         .getElementById("serviceForm")
         .reset();
 
-
     document
         .getElementById("tipoServico")
-        .value =
-        tipoServicoAtual;
-
+        .value = tipoServicoAtual;
 
     document
         .getElementById("dataServico")
-        .value =
-        dataHojeISO();
-
+        .value = dataHojeISO();
 
     esconderAlerta("formAlert");
-
 
     document
         .getElementById("pedagioSection")
         .classList
         .remove("active");
 
-
     document
         .getElementById("btnPedagios")
         .textContent =
         "Incluir Pedágios";
 
-
     document
         .getElementById("pedagiosBody")
         .innerHTML = "";
-
 
     document
         .getElementById("totalPedagios")
@@ -2315,18 +2288,13 @@ function togglePedagios() {
             "pedagioSection"
         );
 
-
     const ativo =
-        section.classList.toggle(
-            "active"
-        );
-
+        section.classList.toggle("active");
 
     const botao =
         document.getElementById(
             "btnPedagios"
         );
-
 
     if (ativo) {
 
@@ -2340,6 +2308,7 @@ function togglePedagios() {
 
         botao.textContent =
             "Incluir Pedágios";
+
     }
 }
 
@@ -2351,35 +2320,24 @@ function criarLinhasPedagio() {
             "pedagiosBody"
         );
 
-
     if (tbody.children.length > 0) {
         return;
     }
 
-
-    for (
-        let i = 1;
-        i <= 10;
-        i++
-    ) {
+    for (let i = 1; i <= 10; i++) {
 
         const tr =
             document.createElement("tr");
 
-
         let options = "";
 
-
-        for (
-            let q = 1;
-            q <= 10;
-            q++
-        ) {
+        for (let q = 1; q <= 10; q++) {
 
             options +=
-                `<option value="${q}">${q}</option>`;
+                `<option value="${q}">
+                    ${q}
+                </option>`;
         }
-
 
         tr.innerHTML = `
 
@@ -2388,8 +2346,7 @@ function criarLinhasPedagio() {
             <td>
                 <select
                     class="pedagio-quantidade"
-                    data-numero="${i}"
-                >
+                    data-numero="${i}">
                     ${options}
                 </select>
             </td>
@@ -2402,8 +2359,7 @@ function criarLinhasPedagio() {
                     min="0"
                     step="0.01"
                     value="0"
-                    inputmode="decimal"
-                >
+                    inputmode="decimal">
             </td>
 
             <td>
@@ -2412,15 +2368,12 @@ function criarLinhasPedagio() {
                     class="pedagio-total"
                     data-numero="${i}"
                     value="R$ 0,00"
-                    readonly
-                >
+                    readonly>
             </td>
         `;
 
-
         tbody.appendChild(tr);
     }
-
 
     document
         .querySelectorAll(
@@ -2440,7 +2393,6 @@ function criarLinhasPedagio() {
 
         });
 
-
     calcularPedagios();
 }
 
@@ -2448,7 +2400,6 @@ function criarLinhasPedagio() {
 function calcularPedagios() {
 
     let totalGeral = 0;
-
 
     document
         .querySelectorAll(
@@ -2459,42 +2410,30 @@ function calcularPedagios() {
             const numero =
                 select.dataset.numero;
 
-
             const quantidade =
-                Number(
-                    select.value || 0
-                );
-
+                Number(select.value || 0);
 
             const inputValor =
                 document.querySelector(
                     `.pedagio-unitario[data-numero="${numero}"]`
                 );
 
-
             const inputTotal =
                 document.querySelector(
                     `.pedagio-total[data-numero="${numero}"]`
                 );
 
-
             const unitario =
-                Number(
-                    inputValor.value || 0
-                );
-
+                Number(inputValor.value || 0);
 
             const total =
                 quantidade * unitario;
 
-
             inputTotal.value =
                 formatarMoeda(total);
 
-
             totalGeral += total;
         });
-
 
     document
         .getElementById("totalPedagios")
@@ -2507,7 +2446,6 @@ function obterPedagiosFormulario() {
 
     const pedagios = [];
 
-
     document
         .querySelectorAll(
             ".pedagio-quantidade"
@@ -2515,47 +2453,32 @@ function obterPedagiosFormulario() {
         .forEach(select => {
 
             const numero =
-                Number(
-                    select.dataset.numero
-                );
-
+                Number(select.dataset.numero);
 
             const quantidade =
-                Number(
-                    select.value || 0
-                );
-
+                Number(select.value || 0);
 
             const inputValor =
                 document.querySelector(
                     `.pedagio-unitario[data-numero="${numero}"]`
                 );
 
-
             const valorUnitario =
-                Number(
-                    inputValor?.value || 0
-                );
-
+                Number(inputValor?.value || 0);
 
             const valorTotal =
-                quantidade *
-                valorUnitario;
-
+                quantidade * valorUnitario;
 
             if (valorUnitario > 0) {
 
                 pedagios.push({
                     numero,
                     quantidade,
-                    valor_unitario:
-                        valorUnitario,
-                    valor_total:
-                        valorTotal
+                    valor_unitario: valorUnitario,
+                    valor_total: valorTotal
                 });
             }
         });
-
 
     return pedagios;
 }
@@ -2569,9 +2492,7 @@ function horaParaMinutos(hora) {
 
     if (!hora) return null;
 
-    const partes =
-        hora.split(":");
-
+    const partes = hora.split(":");
 
     return (
         Number(partes[0]) * 60 +
@@ -2580,30 +2501,18 @@ function horaParaMinutos(hora) {
 }
 
 
-function calcularDiferencaHoras(
-    inicio,
-    fim
-) {
+function calcularDiferencaHoras(inicio, fim) {
 
-    let a =
-        horaParaMinutos(inicio);
+    let a = horaParaMinutos(inicio);
+    let b = horaParaMinutos(fim);
 
-    let b =
-        horaParaMinutos(fim);
-
-
-    if (
-        a === null ||
-        b === null
-    ) {
+    if (a === null || b === null) {
         return 0;
     }
 
-
     if (b < a) {
-        b += 1440;
+        b += 24 * 60;
     }
-
 
     return b - a;
 }
@@ -2614,55 +2523,40 @@ function formatarTempo(minutos) {
     const total =
         Number(minutos || 0);
 
-
     const horas =
         Math.floor(total / 60);
-
 
     const mins =
         total % 60;
 
-
     return (
-        String(horas).padStart(2, "0")
+        String(horas).padStart(2,"0")
         + ":" +
-        String(mins).padStart(2, "0")
+        String(mins).padStart(2,"0")
     );
 }
 
 
-function calcularDataPagamento(
-    dataServico
-) {
+function calcularDataPagamento(dataServico) {
 
     const partes =
         dataServico.split("-");
 
-
-    let ano =
-        Number(partes[0]);
-
-    let mes =
-        Number(partes[1]);
-
-    const dia =
-        Number(partes[2]);
-
+    let ano = Number(partes[0]);
+    let mes = Number(partes[1]);
+    let dia = Number(partes[2]);
 
     if (dia <= 15) {
 
         return `${ano}-${String(mes).padStart(2,"0")}-25`;
     }
 
-
     mes++;
-
 
     if (mes > 12) {
         mes = 1;
         ano++;
     }
-
 
     return `${ano}-${String(mes).padStart(2,"0")}-10`;
 }
@@ -2671,40 +2565,28 @@ function calcularDataPagamento(
 function calcularValoresFormulario() {
 
     const horaInicial =
-        document
-            .getElementById(
-                "hrInicialDeslocamento"
-            )
-            .value;
-
+        document.getElementById(
+            "hrInicialDeslocamento"
+        ).value;
 
     const horaFinalServico =
-        document
-            .getElementById(
-                "hrFinalServico"
-            )
-            .value;
-
+        document.getElementById(
+            "hrFinalServico"
+        ).value;
 
     const kmInicial =
         Number(
-            document
-                .getElementById(
-                    "kmInicialDeslocamento"
-                )
-                .value || 0
+            document.getElementById(
+                "kmInicialDeslocamento"
+            ).value || 0
         );
-
 
     const kmFinal =
         Number(
-            document
-                .getElementById(
-                    "kmFinalDeslocamento"
-                )
-                .value || 0
+            document.getElementById(
+                "kmFinalDeslocamento"
+            ).value || 0
         );
-
 
     const tempoTotal =
         calcularDiferencaHoras(
@@ -2712,47 +2594,35 @@ function calcularValoresFormulario() {
             horaFinalServico
         );
 
-
     const kmTotal =
         kmFinal - kmInicial;
 
-
     if (kmTotal < 0) {
-
         throw new Error(
             "O KM final não pode ser menor que o KM inicial."
         );
     }
 
-
     const valorReembolsoKM =
         kmTotal * 0.68;
-
 
     const diaria =
         tempoTotal <= 330
             ? 190
             : 220;
 
-
-    const aluguelCarro =
-        49.50;
-
+    const aluguelCarro = 49.50;
 
     const pedagios =
         obterPedagiosFormulario();
-
 
     const valorTotalPedagio =
         pedagios.reduce(
             (total, p) =>
                 total +
-                Number(
-                    p.valor_total || 0
-                ),
+                Number(p.valor_total || 0),
             0
         );
-
 
     const totalMotorista =
         diaria +
@@ -2760,24 +2630,18 @@ function calcularValoresFormulario() {
         valorReembolsoKM +
         valorTotalPedagio;
 
-
     const totalSeguranca =
         diaria;
 
-
     const dataServico =
-        document
-            .getElementById(
-                "dataServico"
-            )
-            .value;
-
+        document.getElementById(
+            "dataServico"
+        ).value;
 
     const dataPagamento =
         calcularDataPagamento(
             dataServico
         );
-
 
     return {
         tempoTotal,
@@ -2795,31 +2659,21 @@ function calcularValoresFormulario() {
 }
 
 
-/* =========================================================
-   VALIDAÇÃO
-========================================================= */
-
 function validarFormulario() {
 
     const kmInicial =
         Number(
-            document
-                .getElementById(
-                    "kmInicialDeslocamento"
-                )
-                .value
+            document.getElementById(
+                "kmInicialDeslocamento"
+            ).value
         );
-
 
     const kmFinal =
         Number(
-            document
-                .getElementById(
-                    "kmFinalDeslocamento"
-                )
-                .value
+            document.getElementById(
+                "kmFinalDeslocamento"
+            ).value
         );
-
 
     if (kmFinal < kmInicial) {
 
@@ -2828,14 +2682,10 @@ function validarFormulario() {
         );
     }
 
-
     const data =
-        document
-            .getElementById(
-                "dataServico"
-            )
-            .value;
-
+        document.getElementById(
+            "dataServico"
+        ).value;
 
     if (!data) {
 
@@ -2856,162 +2706,116 @@ async function registrarServico(event) {
 
     esconderAlerta("formAlert");
 
-
     try {
 
         validarFormulario();
 
-
         const valores =
             calcularValoresFormulario();
 
-
         const tipo =
-            document
-                .getElementById(
-                    "tipoServico"
-                )
-                .value;
-
+            document.getElementById(
+                "tipoServico"
+            ).value;
 
         const dataServico =
-            document
-                .getElementById(
-                    "dataServico"
-                )
-                .value;
-
+            document.getElementById(
+                "dataServico"
+            ).value;
 
         const localOrigem =
             tipo === "Escolta"
-                ? document
-                    .getElementById(
-                        "localOrigem"
-                    )
-                    .value
-                    .trim()
+                ? document.getElementById(
+                    "localOrigem"
+                  ).value.trim()
                 : null;
-
 
         const localDestino =
             tipo === "Escolta"
-                ? document
-                    .getElementById(
-                        "localDestino"
-                    )
-                    .value
-                    .trim()
+                ? document.getElementById(
+                    "localDestino"
+                  ).value.trim()
                 : null;
 
-
         const qraMotorista =
-            document
-                .getElementById(
-                    "qraMotorista"
-                )
-                .value
-                .trim();
-
+            document.getElementById(
+                "qraMotorista"
+            ).value;
 
         const qraSeguranca =
-            document
-                .getElementById(
-                    "qraSeguranca"
-                )
-                .value
-                .trim();
-
-
-        const getValue =
-            id =>
-                document
-                    .getElementById(id)
-                    .value;
-
-
-        const getNumber =
-            id =>
-                Number(
-                    document
-                        .getElementById(id)
-                        .value
-                );
-
+            document.getElementById(
+                "qraSeguranca"
+            ).value;
 
         const hrInicialDeslocamento =
-            getValue(
+            document.getElementById(
                 "hrInicialDeslocamento"
-            );
+            ).value;
 
         const kmInicialDeslocamento =
-            getNumber(
-                "kmInicialDeslocamento"
+            Number(
+                document.getElementById(
+                    "kmInicialDeslocamento"
+                ).value
             );
 
         const hrInicialServico =
-            getValue(
+            document.getElementById(
                 "hrInicialServico"
-            );
+            ).value;
 
         const kmInicialServico =
-            getNumber(
-                "kmInicialServico"
+            Number(
+                document.getElementById(
+                    "kmInicialServico"
+                ).value
             );
 
         const hrFinalServico =
-            getValue(
+            document.getElementById(
                 "hrFinalServico"
-            );
+            ).value;
 
         const kmFinalServico =
-            getNumber(
-                "kmFinalServico"
+            Number(
+                document.getElementById(
+                    "kmFinalServico"
+                ).value
             );
 
         const hrFinalDeslocamento =
-            getValue(
+            document.getElementById(
                 "hrFinalDeslocamento"
-            );
+            ).value;
 
         const kmFinalDeslocamento =
-            getNumber(
-                "kmFinalDeslocamento"
+            Number(
+                document.getElementById(
+                    "kmFinalDeslocamento"
+                ).value
             );
-
 
         const btn =
             document.getElementById(
                 "btnRegistrar"
             );
 
-
         btn.disabled = true;
 
-
         document
-            .getElementById(
-                "saveLoading"
-            )
+            .getElementById("saveLoading")
             .classList
             .add("show");
-
 
         const resultado =
             await supabaseClient
                 .from("servicos")
                 .insert({
 
-                    tipo_servico:
-                        tipo,
-
-                    data_servico:
-                        dataServico,
-
-                    local_origem:
-                        localOrigem,
-
-                    local_destino:
-                        localDestino,
+                    tipo_servico: tipo,
+                    data_servico: dataServico,
+                    local_origem: localOrigem,
+                    local_destino: localDestino,
 
                     qra_motorista:
                         qraMotorista,
@@ -3075,77 +2879,62 @@ async function registrarServico(event) {
 
                     registrado_por:
                         usuarioBanco?.id || null
-
                 })
                 .select()
                 .single();
-
 
         if (resultado.error) {
             throw resultado.error;
         }
 
-
         const servico =
             resultado.data;
-
 
         if (valores.pedagios.length > 0) {
 
             const dadosPedagios =
-                valores.pedagios.map(
-                    p => ({
+                valores.pedagios.map(p => ({
 
-                        servico_id:
-                            servico.id,
+                    servico_id:
+                        servico.id,
 
-                        numero:
-                            p.numero,
+                    numero:
+                        p.numero,
 
-                        quantidade:
-                            p.quantidade,
+                    quantidade:
+                        p.quantidade,
 
-                        valor_unitario:
-                            p.valor_unitario,
+                    valor_unitario:
+                        p.valor_unitario,
 
-                        valor_total:
-                            p.valor_total
+                    valor_total:
+                        p.valor_total
 
-                    })
-                );
-
+                }));
 
             const resultadoPedagios =
                 await supabaseClient
                     .from("pedagios")
-                    .insert(
-                        dadosPedagios
-                    );
-
+                    .insert(dadosPedagios);
 
             if (resultadoPedagios.error) {
                 throw resultadoPedagios.error;
             }
         }
 
-
         ultimoServicoSalvo = {
             ...servico,
-            pedagios:
-                valores.pedagios
+            pedagios: valores.pedagios
         };
-
 
         mostrarResenha(
             ultimoServicoSalvo
         );
 
-
         showPage("page-resenha");
 
     }
-
-    catch (error) {
+    catch(error) {
 
         console.error(error);
 
@@ -3156,7 +2945,6 @@ async function registrarServico(event) {
         );
 
     }
-
     finally {
 
         document
@@ -3164,7 +2952,6 @@ async function registrarServico(event) {
                 "btnRegistrar"
             )
             .disabled = false;
-
 
         document
             .getElementById(
@@ -3185,12 +2972,10 @@ function mostrarResenha(servico) {
     const tipo =
         servico.tipo_servico;
 
-
     const nomeEtapa =
         tipo === "Escolta"
             ? "Escolta"
             : "Preservação";
-
 
     const origemDestino =
         tipo === "Escolta"
@@ -3208,15 +2993,14 @@ function mostrarResenha(servico) {
                         )}
                     </strong>
                 </div>
-              `
+            `
             : `
                 <div>
                     <strong>
                         Preservação CD
                     </strong>
                 </div>
-              `;
-
+            `;
 
     document
         .getElementById(
@@ -3250,15 +3034,12 @@ function mostrarResenha(servico) {
         <br>
 
         <div>
-            <strong>
-                Inicial Deslocamento:
-            </strong>
+            <strong>Inicial Deslocamento:</strong>
             ${escapeHtml(
                 servico.hr_inicial_deslocamento
             )}
             —
-            ${servico.km_inicial_deslocamento}
-            KM
+            ${servico.km_inicial_deslocamento} KM
         </div>
 
         <div>
@@ -3269,8 +3050,7 @@ function mostrarResenha(servico) {
                 servico.hr_inicial_servico
             )}
             —
-            ${servico.km_inicial_servico}
-            KM
+            ${servico.km_inicial_servico} KM
         </div>
 
         <div>
@@ -3281,8 +3061,7 @@ function mostrarResenha(servico) {
                 servico.hr_final_servico
             )}
             —
-            ${servico.km_final_servico}
-            KM
+            ${servico.km_final_servico} KM
         </div>
 
         <div>
@@ -3293,16 +3072,13 @@ function mostrarResenha(servico) {
                 servico.hr_final_deslocamento
             )}
             —
-            ${servico.km_final_deslocamento}
-            KM
+            ${servico.km_final_deslocamento} KM
         </div>
 
         <br>
 
         <div>
-            <strong>
-                Total Percorrido:
-            </strong>
+            <strong>Total Percorrido:</strong>
             ${servico.km_total} KM
         </div>
 
@@ -3374,13 +3150,10 @@ function prepararAnosFinanceiro() {
             "finAno"
         );
 
-
     const anoAtual =
         new Date().getFullYear();
 
-
     select.innerHTML = "";
-
 
     for (
         let ano = 2026;
@@ -3393,21 +3166,15 @@ function prepararAnosFinanceiro() {
                 "option"
             );
 
-
         option.value = ano;
         option.textContent = ano;
-
 
         if (ano === anoAtual) {
             option.selected = true;
         }
 
-
-        select.appendChild(
-            option
-        );
+        select.appendChild(option);
     }
-
 
     document
         .getElementById("finMes")
@@ -3426,13 +3193,11 @@ function limparFiltrosRelatorio() {
         )
         .value = "";
 
-
     document
         .getElementById(
             "relDataFinal"
         )
         .value = "";
-
 
     document
         .getElementById(
@@ -3440,37 +3205,39 @@ function limparFiltrosRelatorio() {
         )
         .value = "";
 
-
     document
         .getElementById(
             "relNome"
         )
         .value = "";
 
+    servicosRelatorioAtual = [];
 
     document
         .getElementById(
             "relatorioNomeBody"
         )
         .innerHTML = `
-
             <tr>
-                <td
-                    colspan="6"
-                    class="empty"
-                >
-                    Informe os filtros e clique
-                    em Pesquisar.
+                <td colspan="7" class="empty">
+                    Informe os filtros e clique em Pesquisar.
                 </td>
             </tr>
         `;
-
 
     document
         .getElementById(
             "relatorioNomeResumo"
         )
         .innerHTML = "";
+
+    document
+        .getElementById(
+            "selecionarTodos"
+        )
+        .checked = false;
+
+    atualizarContadorSelecionados();
 }
 
 
@@ -3491,14 +3258,12 @@ async function buscarServicosComFiltros() {
                 }
             );
 
-
     const dataInicial =
         document
             .getElementById(
                 "relDataInicial"
             )
             .value;
-
 
     const dataFinal =
         document
@@ -3507,14 +3272,12 @@ async function buscarServicosComFiltros() {
             )
             .value;
 
-
     const tipo =
         document
             .getElementById(
                 "relTipo"
             )
             .value;
-
 
     if (dataInicial) {
 
@@ -3525,7 +3288,6 @@ async function buscarServicosComFiltros() {
             );
     }
 
-
     if (dataFinal) {
 
         query =
@@ -3534,7 +3296,6 @@ async function buscarServicosComFiltros() {
                 dataFinal
             );
     }
-
 
     if (tipo) {
 
@@ -3545,15 +3306,12 @@ async function buscarServicosComFiltros() {
             );
     }
 
-
     const resultado =
         await query;
-
 
     if (resultado.error) {
         throw resultado.error;
     }
-
 
     return resultado.data || [];
 }
@@ -3567,21 +3325,17 @@ async function gerarRelatorioServicos() {
 
     esconderAlerta("relAlert");
 
-
     const loading =
         document.getElementById(
             "relLoading"
         );
 
-
     loading.classList.add("show");
-
 
     try {
 
         const servicos =
             await buscarServicosComFiltros();
-
 
         const nomePesquisa =
             normalizarTexto(
@@ -3592,9 +3346,7 @@ async function gerarRelatorioServicos() {
                     .value
             );
 
-
         const registros = [];
-
 
         for (const servico of servicos) {
 
@@ -3603,12 +3355,10 @@ async function gerarRelatorioServicos() {
                     servico.qra_motorista
                 );
 
-
             const seguranca =
                 normalizarTexto(
                     servico.qra_seguranca
                 );
-
 
             if (nomePesquisa) {
 
@@ -3617,12 +3367,10 @@ async function gerarRelatorioServicos() {
                         nomePesquisa
                     );
 
-
                 const ehSeguranca =
                     seguranca.includes(
                         nomePesquisa
                     );
-
 
                 if (ehMotorista) {
 
@@ -3640,7 +3388,6 @@ async function gerarRelatorioServicos() {
                             Number(
                                 servico.total_motorista
                             )
-
                     });
 
                 }
@@ -3660,7 +3407,6 @@ async function gerarRelatorioServicos() {
                             Number(
                                 servico.total_seguranca
                             )
-
                     });
                 }
 
@@ -3681,9 +3427,7 @@ async function gerarRelatorioServicos() {
                         Number(
                             servico.total_motorista
                         )
-
                 });
-
 
                 registros.push({
 
@@ -3699,23 +3443,19 @@ async function gerarRelatorioServicos() {
                         Number(
                             servico.total_seguranca
                         )
-
                 });
             }
         }
 
-
         servicosRelatorioAtual =
             registros;
-
 
         renderizarRelatorioNome(
             registros
         );
 
     }
-
-    catch (error) {
+    catch(error) {
 
         console.error(error);
 
@@ -3726,7 +3466,6 @@ async function gerarRelatorioServicos() {
         );
 
     }
-
     finally {
 
         loading.classList.remove(
@@ -3736,67 +3475,64 @@ async function gerarRelatorioServicos() {
 }
 
 
-function renderizarRelatorioNome(
-    registros
-) {
+/* =========================================================
+   RENDERIZAR RELATÓRIO
+========================================================= */
+
+function renderizarRelatorioNome(registros) {
 
     const tbody =
         document.getElementById(
             "relatorioNomeBody"
         );
 
-
     const resumo =
         document.getElementById(
             "relatorioNomeResumo"
         );
 
+    /*
+       Limpa seleção anterior.
+    */
+
+    document
+        .getElementById(
+            "selecionarTodos"
+        )
+        .checked = false;
 
     if (!registros.length) {
 
         tbody.innerHTML = `
-
             <tr>
-                <td
-                    colspan="6"
-                    class="empty"
-                >
+                <td colspan="7" class="empty">
                     Nenhum registro encontrado.
                 </td>
             </tr>
         `;
 
-
         resumo.innerHTML = "";
+
+        atualizarContadorSelecionados();
 
         return;
     }
 
+    let total = 0;
 
-    const total =
-        registros.reduce(
-            (soma, r) =>
-                soma +
-                Number(
-                    r.valor || 0
-                ),
-            0
-        );
-
+    registros.forEach(r => {
+        total += Number(r.valor || 0);
+    });
 
     const quantidade =
         registros.length;
 
-
     const nomes =
-        [
-            ...new Set(
-                registros.map(
-                    r => r.nome
-                )
+        [...new Set(
+            registros.map(
+                r => r.nome
             )
-        ];
-
+        )];
 
     resumo.innerHTML = `
 
@@ -3838,57 +3574,325 @@ function renderizarRelatorioNome(
     `;
 
 
+    /*
+       Cada linha recebe o ID real do serviço.
+       Isso permite apagar o registro correto.
+    */
+
     tbody.innerHTML =
-        registros
-            .map(r => `
+        registros.map((r, index) => `
 
-                <tr>
+            <tr
+                data-servico-id="${escapeHtml(
+                    r.servico.id
+                )}"
+                data-index="${index}">
 
-                    <td>
-                        ${formatarData(
-                            r.servico.data_servico
+                <td>
+
+                    <input
+                        type="checkbox"
+                        class="checkbox-selecao"
+                        data-servico-id="${escapeHtml(
+                            r.servico.id
+                        )}"
+                        onchange="alterarSelecaoRegistro(this)">
+
+                </td>
+
+                <td>
+                    ${formatarData(
+                        r.servico.data_servico
+                    )}
+                </td>
+
+                <td>
+
+                    <span class="tag ${
+                        r.servico.tipo_servico ===
+                        "Escolta"
+                            ? "tag-escolta"
+                            : "tag-preservacao"
+                    }">
+
+                        ${escapeHtml(
+                            r.servico.tipo_servico
                         )}
-                    </td>
 
-                    <td>
+                    </span>
 
-                        <span class="tag ${
-                            r.servico.tipo_servico ===
-                            "Escolta"
-                                ? "tag-escolta"
-                                : "tag-preservacao"
-                        }">
+                </td>
 
-                            ${escapeHtml(
-                                r.servico.tipo_servico
-                            )}
+                <td>
+                    ${escapeHtml(r.nome)}
+                </td>
 
-                        </span>
+                <td>
+                    ${escapeHtml(r.funcao)}
+                </td>
 
-                    </td>
+                <td class="money">
+                    ${formatarMoeda(r.valor)}
+                </td>
 
-                    <td>
-                        ${escapeHtml(r.nome)}
-                    </td>
+                <td>
+                    ${formatarData(
+                        r.servico.data_pagamento
+                    )}
+                </td>
 
-                    <td>
-                        ${escapeHtml(r.funcao)}
-                    </td>
+            </tr>
 
-                    <td class="money">
-                        ${formatarMoeda(r.valor)}
-                    </td>
+        `).join("");
 
-                    <td>
-                        ${formatarData(
-                            r.servico.data_pagamento
-                        )}
-                    </td>
+    atualizarContadorSelecionados();
+}
 
-                </tr>
 
-            `)
-            .join("");
+/* =========================================================
+   SELEÇÃO DE REGISTROS
+========================================================= */
+
+function alterarSelecaoRegistro(checkbox) {
+
+    const tr =
+        checkbox.closest("tr");
+
+    if (checkbox.checked) {
+
+        tr.classList.add(
+            "linha-selecionada"
+        );
+
+    }
+    else {
+
+        tr.classList.remove(
+            "linha-selecionada"
+        );
+
+    }
+
+    atualizarContadorSelecionados();
+}
+
+
+function obterIdsSelecionados() {
+
+    return [
+        ...document.querySelectorAll(
+            ".checkbox-selecao:checked"
+        )
+    ]
+    .map(
+        checkbox =>
+            checkbox.dataset.servicoId
+    )
+    .filter(Boolean);
+}
+
+
+function atualizarContadorSelecionados() {
+
+    const ids =
+        obterIdsSelecionados();
+
+    const contador =
+        document.getElementById(
+            "contadorSelecionados"
+        );
+
+    const botao =
+        document.getElementById(
+            "btnExcluirSelecionados"
+        );
+
+    const plural =
+        ids.length === 1
+            ? "registro"
+            : "registros";
+
+    contador.textContent =
+        `${ids.length} ${plural} selecionado${
+            ids.length === 1 ? "" : "s"
+        }`;
+
+    botao.disabled =
+        ids.length === 0;
+}
+
+
+function selecionarTodosRegistros(marcado) {
+
+    document
+        .querySelectorAll(
+            ".checkbox-selecao"
+        )
+        .forEach(checkbox => {
+
+            checkbox.checked =
+                marcado;
+
+            const tr =
+                checkbox.closest("tr");
+
+            if (marcado) {
+
+                tr.classList.add(
+                    "linha-selecionada"
+                );
+
+            }
+            else {
+
+                tr.classList.remove(
+                    "linha-selecionada"
+                );
+            }
+
+        });
+
+    atualizarContadorSelecionados();
+}
+
+
+/* =========================================================
+   EXCLUIR REGISTROS
+========================================================= */
+
+async function excluirSelecionados() {
+
+    const ids =
+        obterIdsSelecionados();
+
+    if (!ids.length) {
+
+        mostrarAlerta(
+            "relAlert",
+            "Selecione pelo menos um registro para excluir."
+        );
+
+        return;
+    }
+
+    const mensagem =
+        ids.length === 1
+            ? "Tem certeza que deseja excluir este registro?"
+            : `Tem certeza que deseja excluir estes ${ids.length} registros?`;
+
+    const confirmou =
+        window.confirm(
+            mensagem +
+            "\n\nEsta ação não poderá ser desfeita."
+        );
+
+    if (!confirmou) {
+        return;
+    }
+
+    const botao =
+        document.getElementById(
+            "btnExcluirSelecionados"
+        );
+
+    const textoOriginal =
+        botao.textContent;
+
+    botao.disabled = true;
+    botao.textContent =
+        "Excluindo...";
+
+    try {
+
+        /*
+           Primeiro excluímos os pedágios
+           relacionados aos serviços.
+        */
+
+        const resultadoPedagios =
+            await supabaseClient
+                .from("pedagios")
+                .delete()
+                .in(
+                    "servico_id",
+                    ids
+                );
+
+        if (resultadoPedagios.error) {
+            throw resultadoPedagios.error;
+        }
+
+
+        /*
+           Depois excluímos os serviços.
+        */
+
+        const resultadoServicos =
+            await supabaseClient
+                .from("servicos")
+                .delete()
+                .in(
+                    "id",
+                    ids
+                );
+
+        if (resultadoServicos.error) {
+            throw resultadoServicos.error;
+        }
+
+
+        /*
+           Remove da memória local.
+        */
+
+        servicosRelatorioAtual =
+            servicosRelatorioAtual.filter(
+                registro =>
+                    !ids.includes(
+                        String(
+                            registro.servico.id
+                        )
+                    )
+            );
+
+
+        mostrarAlerta(
+            "relAlert",
+            ids.length === 1
+                ? "Registro excluído com sucesso."
+                : `${ids.length} registros excluídos com sucesso.`,
+            "success"
+        );
+
+
+        /*
+           Atualiza a pesquisa.
+        */
+
+        await gerarRelatorioServicos();
+
+    }
+    catch(error) {
+
+        console.error(
+            "Erro ao excluir:",
+            error
+        );
+
+        mostrarAlerta(
+            "relAlert",
+            "Não foi possível excluir os registros. " +
+            (error.message || error)
+        );
+
+    }
+    finally {
+
+        botao.textContent =
+            textoOriginal;
+
+        atualizarContadorSelecionados();
+    }
 }
 
 
@@ -3902,15 +3906,12 @@ async function gerarRelatorioFinanceiro() {
         "financeiroAlert"
     );
 
-
     const loading =
         document.getElementById(
             "financeiroLoading"
         );
 
-
     loading.classList.add("show");
-
 
     try {
 
@@ -3923,7 +3924,6 @@ async function gerarRelatorioFinanceiro() {
                     .value
             );
 
-
         const mes =
             Number(
                 document
@@ -3932,7 +3932,6 @@ async function gerarRelatorioFinanceiro() {
                     )
                     .value
             );
-
 
         const dia =
             Number(
@@ -3943,10 +3942,8 @@ async function gerarRelatorioFinanceiro() {
                     .value
             );
 
-
         const dataInicio =
             `${ano}-${String(mes).padStart(2,"0")}-01`;
-
 
         const ultimoDia =
             new Date(
@@ -3955,10 +3952,8 @@ async function gerarRelatorioFinanceiro() {
                 0
             ).getDate();
 
-
         const dataFim =
             `${ano}-${String(mes).padStart(2,"0")}-${String(ultimoDia).padStart(2,"0")}`;
-
 
         const resultado =
             await supabaseClient
@@ -3979,15 +3974,12 @@ async function gerarRelatorioFinanceiro() {
                     }
                 );
 
-
         if (resultado.error) {
             throw resultado.error;
         }
 
-
         const servicos =
             resultado.data || [];
-
 
         const servicosFiltrados =
             servicos.filter(
@@ -3998,22 +3990,16 @@ async function gerarRelatorioFinanceiro() {
                             servico.data_pagamento
                         );
 
-
                     const diaPagamento =
                         Number(
                             data.substring(8,10)
                         );
 
-
-                    return (
-                        diaPagamento === dia
-                    );
+                    return diaPagamento === dia;
                 }
             );
 
-
         const agrupado = {};
-
 
         for (
             const servico
@@ -4025,7 +4011,6 @@ async function gerarRelatorioFinanceiro() {
                     servico.qra_motorista || ""
                 ).trim();
 
-
             if (motorista) {
 
                 const chave =
@@ -4034,44 +4019,33 @@ async function gerarRelatorioFinanceiro() {
                     ) +
                     "|motorista";
 
-
                 if (!agrupado[chave]) {
 
                     agrupado[chave] = {
 
-                        nome:
-                            motorista,
+                        nome: motorista,
+                        funcao: "Motorista",
+                        quantidade: 0,
+                        total: 0
 
-                        funcao:
-                            "Motorista",
-
-                        quantidade:
-                            0,
-
-                        total:
-                            0
                     };
                 }
-
 
                 agrupado[chave]
                     .quantidade++;
 
-
                 agrupado[chave]
                     .total +=
                     Number(
-                        servico.total_motorista
-                        || 0
+                        servico.total_motorista ||
+                        0
                     );
             }
-
 
             const seguranca =
                 String(
                     servico.qra_seguranca || ""
                 ).trim();
-
 
             const mesmaPessoa =
                 normalizarTexto(
@@ -4080,7 +4054,6 @@ async function gerarRelatorioFinanceiro() {
                 normalizarTexto(
                     seguranca
                 );
-
 
             if (
                 seguranca &&
@@ -4093,62 +4066,49 @@ async function gerarRelatorioFinanceiro() {
                     ) +
                     "|seguranca";
 
-
                 if (!agrupado[chave]) {
 
                     agrupado[chave] = {
 
-                        nome:
-                            seguranca,
+                        nome: seguranca,
+                        funcao: "Segurança",
+                        quantidade: 0,
+                        total: 0
 
-                        funcao:
-                            "Segurança",
-
-                        quantidade:
-                            0,
-
-                        total:
-                            0
                     };
                 }
-
 
                 agrupado[chave]
                     .quantidade++;
 
-
                 agrupado[chave]
                     .total +=
                     Number(
-                        servico.total_seguranca
-                        || 0
+                        servico.total_seguranca ||
+                        0
                     );
             }
         }
-
 
         const linhas =
             Object.values(
                 agrupado
             );
 
-
         linhas.sort(
-            (a, b) =>
+            (a,b) =>
                 a.nome.localeCompare(
                     b.nome,
                     "pt-BR"
                 )
         );
 
-
         renderizarFinanceiro(
             linhas
         );
 
     }
-
-    catch (error) {
+    catch(error) {
 
         console.error(error);
 
@@ -4159,7 +4119,6 @@ async function gerarRelatorioFinanceiro() {
         );
 
     }
-
     finally {
 
         loading.classList.remove(
@@ -4169,40 +4128,30 @@ async function gerarRelatorioFinanceiro() {
 }
 
 
-function renderizarFinanceiro(
-    linhas
-) {
+function renderizarFinanceiro(linhas) {
 
     const tbody =
         document.getElementById(
             "financeiroBody"
         );
 
-
     const totalElemento =
         document.getElementById(
             "financeiroTotal"
         );
 
-
     if (!linhas.length) {
 
         tbody.innerHTML = `
-
             <tr>
-                <td
-                    colspan="4"
-                    class="empty"
-                >
+                <td colspan="4" class="empty">
                     Nenhum pagamento encontrado
                     para os filtros selecionados.
                 </td>
             </tr>
         `;
 
-
         totalElemento.innerHTML = `
-
             <span>
                 Total Geral a Pagar
             </span>
@@ -4212,62 +4161,55 @@ function renderizarFinanceiro(
             </span>
         `;
 
-
         return;
     }
 
+    let totalGeral = 0;
 
-    const totalGeral =
-        linhas.reduce(
-            (total, linha) =>
-                total +
-                Number(
-                    linha.total || 0
-                ),
-            0
-        );
+    linhas.forEach(linha => {
 
+        totalGeral +=
+            Number(
+                linha.total || 0
+            );
+
+    });
 
     tbody.innerHTML =
-        linhas
-            .map(
-                linha => `
+        linhas.map(linha => `
 
-                <tr>
+            <tr>
 
-                    <td>
-                        ${escapeHtml(
-                            linha.nome
-                        )}
-                    </td>
+                <td>
+                    ${escapeHtml(
+                        linha.nome
+                    )}
+                </td>
 
-                    <td>
-                        ${escapeHtml(
-                            linha.funcao
-                        )}
-                    </td>
+                <td>
+                    ${escapeHtml(
+                        linha.funcao
+                    )}
+                </td>
 
-                    <td>
-                        ${linha.quantidade}
-                        ${
-                            linha.quantidade === 1
-                                ? "serviço"
-                                : "serviços"
-                        }
-                    </td>
+                <td>
+                    ${linha.quantidade}
+                    ${
+                        linha.quantidade === 1
+                            ? "serviço"
+                            : "serviços"
+                    }
+                </td>
 
-                    <td class="money">
-                        ${formatarMoeda(
-                            linha.total
-                        )}
-                    </td>
+                <td class="money">
+                    ${formatarMoeda(
+                        linha.total
+                    )}
+                </td>
 
-                </tr>
+            </tr>
 
-            `
-            )
-            .join("");
-
+        `).join("");
 
     totalElemento.innerHTML = `
 
@@ -4276,8 +4218,11 @@ function renderizarFinanceiro(
         </span>
 
         <span>
-            ${formatarMoeda(totalGeral)}
+            ${formatarMoeda(
+                totalGeral
+            )}
         </span>
+
     `;
 }
 
@@ -4305,6 +4250,7 @@ document
 /*
    KM somente números inteiros.
 */
+
 document
     .querySelectorAll(
         'input[type="number"][id*="km"]'
@@ -4335,26 +4281,11 @@ document.addEventListener(
 
         prepararAnosFinanceiro();
 
-        /*
-           Começa explicitamente
-           na tela de login.
-        */
-        document
-            .getElementById("system")
-            .classList
-            .add("hidden");
-
-
-        showPage("page-login");
-
-
-        /*
-           Depois verifica se já existe
-           uma sessão salva no Supabase.
-        */
         verificarSessao();
+
     }
 );
+
 </script>
 
 </body>
