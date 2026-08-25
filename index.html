@@ -1034,7 +1034,16 @@ td select {
                 <div class="alert alert-info show">
                     <strong>Preservação CD</strong>
                 </div>
+		
+		<div class="form-group">
+    				<label for="dataPreservacao">Data da Preservação</label>
 
+  			<input
+ 				type="date"
+  				id="dataPreservacao"
+ 				name="dataPreservacao"
+  				required>
+		</div>
             </div>
 
             <div
@@ -1064,7 +1073,29 @@ td select {
                             André Kaique
                         </option>
 
-                    </select>
+                    </select><select id="qraSeguranca" required>
+
+    <option value="">
+        Selecione o segurança
+    </option>
+
+    <option value="J.Lima">
+        J.Lima
+    </option>
+
+    <option value="Paulo">
+        Paulo
+    </option>
+
+    <option value="Ramos">
+        Ramos
+    </option>
+
+    <option value="Pacini">
+        Pacini
+    </option>
+
+</select>
 
                 </div>
 
@@ -1831,6 +1862,8 @@ function dataHojeISO() {
         String(agora.getDate()).padStart(2,"0")
     }`;
 }
+
+
 
 
 function normalizarTexto(texto) {
